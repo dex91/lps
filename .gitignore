@@ -44,3 +44,6 @@ testem.log
 # System Files
 .DS_Store
 Thumbs.db
+
+# Files to ignore because handled outside...
+*.drawio
