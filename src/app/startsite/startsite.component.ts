@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 
 @Component({
-  selector: 'app-startsite',
+  selector: 'lps-startsite',
   templateUrl: './startsite.component.html',
   styleUrls: ['./startsite.component.css']
 })
