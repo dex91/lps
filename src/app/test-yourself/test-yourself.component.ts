@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 
 @Component({
-  selector: 'app-test-yourself',
+  selector: 'lps-test-yourself',
   templateUrl: './test-yourself.component.html',
   styleUrls: ['./test-yourself.component.css']
 })
