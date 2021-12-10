@@ -1,0 +1,55 @@
+<div class="pricing-header p-3 pb-md-4 mx-auto text-center">
+  <h1 class="display-4 fw-normal">Lernmodus</h1>
+  <p class="fs-5 text-muted">Hier k&ouml;nnen Sie ganz entspannt jede einzelne Frage aus einem Fragenkatalog im Detail anschauen und lernen.</p>
+  <p class="fs-5 text-muted">Wir w&uuml;nschen viel Erfolg beim lernen!</p>
+</div>
+<div class="row row-cols-2 row-cols-md-3 mb-3 text-center">
+  <div class="col-6 col-md-4">
+    <div class="card">
+      <div class="card-header">POOLNAME</div>
+      <ul class="list-group list-group-scrollable list-group-flush">
+        <a routerLink="{{question.id}}" class="mb-1 h6 text-decoration-none list-group-item d-flex justify-content-between align-items-center" *ngFor="let question of questions">
+          Frage Nr. {{question.id}}
+          <container-element [ngSwitch]="question.q_answer_type">
+            <span class="badge bg-primary rounded-pill" *ngSwitchCase="1">Single</span>
+            <span class="badge bg-primary rounded-pill" *ngSwitchCase="2">Multiple</span>
+            <span class="badge bg-primary rounded-pill" *ngSwitchCase="3">Text</span>
+          </container-element>
+        </a>
+      </ul>
+    </div>
+  </div>
+  <div class="col-md-8" *ngIf="!frageSelectiert else sectionOfQuestion;">
+    <div class="card d-flex justify-content-center h-100"><span class="text-primary">Bitte wähle eine Frage aus</span></div>
+  </div>
+  <ng-template #sectionOfQuestion>
+    <div class="col-md-8">
+      <div class="card text-left">
+        <div class="card-header">Frage Nr. x</div>
+        <div class="card-body">
+          <span class="badge bg-primary rounded-pill float-right">5 Punkte</span>
+          <h5 class="card-title">Frage an sich</h5>
+          <ul class="list-group list-group-flush">
+            <li class="list-group-item d-flex justify-content-between align-items-center mb-2 border border-success">Richtige Antwort</li>
+            <li class="list-group-item d-flex justify-content-between align-items-center mb-2 border border-danger">Falsche Antwort</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </ng-template>
+</div>
+
+
+  <div class="row row-cols-2 row-cols-md-3 mb-3 text-center">
+    <div class="col-md-12">
+      <div class="card d-flex justify-content-center h-100">
+        <div class="card-header">Bitte wähle einen Fragenkatalog aus</div>
+        <ul class="list-group d-flex justify-content-center list-group-flush">
+          <a routerLink="/learning/{{pool.poolName}}/" class="mb-1 h6 text-decoration-none list-group-item d-flex justify-content-between align-items-center" *ngFor="let pool of questionPool">
+            {{pool.poolName}}
+          <span class="badge bg-primary rounded-pill">{{pool.poolQuestions}} Fragen</span>
+          </a>
+        </ul>
+      </div>
+    </div>
+  </div>

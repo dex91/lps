@@ -1,16 +1,16 @@
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
-import { LearningComponent } from './learning/learning.component';
+import { LearningStartComponent } from './learning-start/learning-start.component';
 import { SimulateTestComponent } from './simulate-test/simulate-test.component';
 import { StartsiteComponent } from './startsite/startsite.component';
 import { TestYourselfComponent } from './test-yourself/test-yourself.component';
 
 const routes: Routes = [
   { path: 'start', component: StartsiteComponent },
-  { path: 'learning', component: LearningComponent },
-  { path: 'learning/:questionId', component: LearningComponent },
+  {
+    path: 'learning', component: LearningStartComponent, children: [{ path:':qusestionPool', component: StartsiteComponent, children: [{ path:':questionId', component: StartsiteComponent }] }] },
   { path: 'vorpruefung', component: TestYourselfComponent },
-  { path: 'vorpruefung/:questionId', component: TestYourselfComponent },
+  { path: 'vorpruefung/:qusestionPool/:questionId', component: TestYourselfComponent },
   { path: 'pruefung', component: SimulateTestComponent },
   { path: '',   redirectTo: '/start', pathMatch: 'full' },
   { path: '**', component: StartsiteComponent },

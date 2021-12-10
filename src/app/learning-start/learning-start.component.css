@@ -1,0 +1,6 @@
+.list-group-scrollable{
+  max-height: 246px;
+  margin-bottom: 4px;
+  overflow-y: scroll;
+  overflow-x: hidden;
+}

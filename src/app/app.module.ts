@@ -6,7 +6,7 @@ import { AppComponent } from './app.component';
 import { FooterComponent } from './footer/footer.component';
 import { StartsiteComponent } from './startsite/startsite.component';
 import { HeaderComponent } from './header/header.component';
-import { LearningComponent } from './learning/learning.component';
+import { LearningStartComponent } from './learning-start/learning-start.component';
 import { TestYourselfComponent } from './test-yourself/test-yourself.component';
 import { SimulateTestComponent } from './simulate-test/simulate-test.component';
 
@@ -16,7 +16,7 @@ import { SimulateTestComponent } from './simulate-test/simulate-test.component';
     FooterComponent,
     StartsiteComponent,
     HeaderComponent,
-    LearningComponent,
+    LearningStartComponent,
     TestYourselfComponent,
     SimulateTestComponent
   ],
