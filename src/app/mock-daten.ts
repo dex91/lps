@@ -13,6 +13,7 @@ export interface Question{
 
 export interface QuestionPool{
   poolId: Number,
+  poolURIName: String,
   poolName: String,
   poolQuestions: Number,
 }
@@ -20,7 +21,8 @@ export interface QuestionPool{
 export const questionPools: QuestionPool[] = [
   {
     poolId: 1,
-    poolName: "LPIC-01",
+    poolURIName: "LPIC-01",
+    poolName: "Linux Professional Institute Certification, Stage 1",
     poolQuestions: 12,
   },
 ];
