@@ -19,7 +19,7 @@
       </ul>
     </div>
   </div>
-  <div class="col-md-8" *ngIf="frageSelectiert else sectionOfQuestion;">
+  <div class="col-md-8" *ngIf="!frageSelectiert else sectionOfQuestion;">
     <div class="card d-flex justify-content-center h-100"><span class="text-primary">Bitte wähle eine Frage aus</span></div>
   </div>
   <ng-template #sectionOfQuestion>
@@ -40,7 +40,7 @@
 </div>
 
 
-  <div class="row row-cols-2 row-cols-md-3 mb-3 text-center">
+  <div class="row row-cols-1 row-cols-md-1 mb-3 text-center">
     <div class="col-md-12">
       <div class="card d-flex justify-content-center h-100">
         <div class="card-header">Bitte wähle einen Fragenkatalog aus</div>
