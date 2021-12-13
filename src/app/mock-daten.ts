@@ -9,6 +9,7 @@ export interface Question{
   q_edited?: Date,
   q_createdby?: String,
   q_answered: Boolean,
+  q_poolId: Number,
 }
 
 export interface QuestionPool{
@@ -37,6 +38,7 @@ export const questions: Question[] = [
   q_points: 3,
   q_createdby: "b.aranda@outlook.de",
   q_answered: false,
+  q_poolId: 1,
 },
 {
   id: 2,
@@ -46,7 +48,7 @@ export const questions: Question[] = [
   q_points: 3,
   q_createdby: "b.aranda@outlook.de",
   q_answered: false,
-
+  q_poolId: 1,
 },
 {
   id: 3,
@@ -56,7 +58,7 @@ export const questions: Question[] = [
   q_points: 3,
   q_createdby: "b.aranda@outlook.de",
   q_answered: false,
-
+  q_poolId: 1,
 },
 {
   id: 4,
@@ -66,7 +68,7 @@ export const questions: Question[] = [
   q_points: 3,
   q_createdby: "b.aranda@outlook.de",
   q_answered: false,
-
+  q_poolId: 1,
 },
 {
   id: 5,
@@ -76,7 +78,7 @@ export const questions: Question[] = [
   q_points: 3,
   q_createdby: "b.aranda@outlook.de",
   q_answered: false,
-
+  q_poolId: 1,
 },
 {
   id: 6,
@@ -86,7 +88,7 @@ export const questions: Question[] = [
   q_points: 3,
   q_createdby: "b.aranda@outlook.de",
   q_answered: false,
-
+  q_poolId: 1,
 },
 {
   id: 7,
@@ -96,7 +98,7 @@ export const questions: Question[] = [
   q_points: 3,
   q_createdby: "b.aranda@outlook.de",
   q_answered: false,
-
+  q_poolId: 1,
 },
 {
   id: 8,
@@ -106,7 +108,7 @@ export const questions: Question[] = [
   q_points: 3,
   q_createdby: "b.aranda@outlook.de",
   q_answered: false,
-
+  q_poolId: 1,
 },
 {
   id: 9,
@@ -116,7 +118,7 @@ export const questions: Question[] = [
   q_points: 3,
   q_createdby: "b.aranda@outlook.de",
   q_answered: false,
-
+  q_poolId: 1,
 },
 {
   id: 10,
@@ -126,7 +128,7 @@ export const questions: Question[] = [
   q_points: 3,
   q_createdby: "b.aranda@outlook.de",
   q_answered: false,
-
+  q_poolId: 1,
 },
 {
   id: 10,
@@ -136,7 +138,7 @@ export const questions: Question[] = [
   q_points: 3,
   q_createdby: "b.aranda@outlook.de",
   q_answered: false,
-
+  q_poolId: 1,
 },
 {
   id: 11,
@@ -146,7 +148,7 @@ export const questions: Question[] = [
   q_points: 3,
   q_createdby: "b.aranda@outlook.de",
   q_answered: false,
-
+  q_poolId: 1,
 },
 {
   id: 12,
@@ -156,6 +158,6 @@ export const questions: Question[] = [
   q_points: 3,
   q_createdby: "b.aranda@outlook.de",
   q_answered: false,
-
+  q_poolId: 1,
 },
 ];

@@ -6,9 +6,9 @@
 <div class="row row-cols-2 row-cols-md-3 mb-3 text-center">
   <div class="col-6 col-md-4">
     <div class="card">
-      <div class="card-header">POOLNAME</div>
+      <div class="card-header">Linux Professional Institute Certification I</div>
       <ul class="list-group list-group-scrollable list-group-flush">
-        <a routerLink="{{question.id}}" class="mb-1 h6 text-decoration-none list-group-item d-flex justify-content-between align-items-center" *ngFor="let question of questions">
+        <a routerLink="/learning/{{question.id}}" class="mb-1 h6 text-decoration-none list-group-item d-flex justify-content-between align-items-center" *ngFor="let question of questions">
           Frage Nr. {{question.id}}
           <container-element [ngSwitch]="question.q_answer_type">
             <span class="badge bg-primary rounded-pill" *ngSwitchCase="1">Single</span>
@@ -40,6 +40,7 @@
 </div>
 
 
+  <!-- FALLS EIN FRAGENKATALOG-MODULE KOMMEN SOLLTE!!!!!
   <div class="row row-cols-1 row-cols-md-1 mb-3 text-center">
     <div class="col-md-12">
       <div class="card d-flex justify-content-center h-100">
@@ -52,4 +53,4 @@
         </ul>
       </div>
     </div>
-  </div>
+  </div> -->

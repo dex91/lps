@@ -3,12 +3,12 @@ import { questions, questionPools } from '../mock-daten';
 import { Router } from '@angular/router';
 
 @Component({
-  selector: 'lps-learning-start',
-  templateUrl: './learning-start.component.html',
-  styleUrls: ['./learning-start.component.css']
+  selector: 'lps-start',
+  templateUrl: './learning.component.html',
+  styleUrls: ['./learning.component.css']
 })
 
-export class LearningStartComponent implements OnInit {
+export class LearningComponent implements OnInit {
 
   constructor() { }
 
