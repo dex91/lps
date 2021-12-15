@@ -3,12 +3,13 @@
   <p class="fs-5 text-muted">Hier k&ouml;nnen Sie ganz entspannt jede einzelne Frage aus einem Fragenkatalog im Detail anschauen und lernen.</p>
   <p class="fs-5 text-muted">Wir w&uuml;nschen viel Erfolg beim lernen!</p>
 </div>
-<div class="row row-cols-2 row-cols-md-3 mb-3">
+
+<div *ngIf="poolSelected && selectedPool else katalog" class="row row-cols-2 row-cols-md-3 mb-3">
   <div class="col-6 col-md-4">
     <div class="card">
-      <div class="card-header">Linux Professional Institute Certification I</div>
+      <div class="card-header">{{selectedPool.poolName}}</div>
       <ul class="list-group list-group-scrollable list-group-flush">
-        <a *ngFor="let question of questions" routerLink="/learning/{{question.id}}" class="mb-1 h6 text-decoration-none list-group-item d-flex justify-content-between align-items-center">
+        <a *ngFor="let question of questions" routerLink="/learning/{{selectedPool.poolURIName}}/{{question.id}}" class="mb-1 h6 text-decoration-none list-group-item d-flex justify-content-between align-items-center">
           Frage Nr. {{question.id}}
           <span [ngSwitch]="question.q_answer_type" class="badge bg-primary rounded-pill">
             <ng-container *ngSwitchCase="1">Single</ng-container>
@@ -58,22 +59,31 @@
     </div>
   </ng-template>
   <ng-template #loadingQuestion>
-    <div class="card"><div class="card-body"><div class="spinner-grow text-primary" role="status"></div><br /><span class="text-primary">Lade Frage...</span></div></div>
+    <div class="card"><div class="card-body text-center"><div class="spinner-grow text-primary" role="status"></div><br /><span class="text-primary">Lade Frage...</span></div></div>
   </ng-template>
 </div>
 
-
-  <!-- FALLS EIN FRAGENKATALOG-MODULE KOMMEN SOLLTE!!!!!
-  <div class="row row-cols-1 row-cols-md-1 mb-3 text-center">
+<ng-template #katalog>
+  <div *ngIf="selectedPool else ladekatalog" class="row row-cols-1 row-cols-md-1 mb-3 text-center">
     <div class="col-md-12">
       <div class="card d-flex justify-content-center h-100">
         <div class="card-header">Bitte wähle einen Fragenkatalog aus</div>
         <ul class="list-group d-flex justify-content-center list-group-flush">
-          <a routerLink="/learning/{{pool.poolURIName}}/" class="mb-1 h6 text-decoration-none list-group-item d-flex justify-content-between align-items-center" *ngFor="let pool of questionPool">
-            {{pool.poolName}}
-          <span class="badge bg-primary rounded-pill">{{pool.poolQuestions}} Fragen</span>
+          <a *ngFor="let pools of pool" routerLink="/learning/{{pools.poolURIName}}/" class="mb-1 h6 text-decoration-none list-group-item d-flex justify-content-between align-items-center">
+            {{pools.poolName}}
+          <span class="badge bg-primary rounded-pill"></span>
           </a>
         </ul>
       </div>
     </div>
-  </div> -->
+  </div>
+  </ng-template>
+  <ng-template #ladekatalog>
+    <div class="row row-cols-1 row-cols-md-1 mb-3 text-center">
+      <div class="col-md-12">
+        <div class="card d-flex justify-content-center h-100">
+          <div class="card-body text-center"><div class="spinner-grow text-primary" role="status"></div><br /><span class="text-primary">Lade Fragenkatalog</span></div>
+        </div>
+      </div>
+    </div>
+  </ng-template>
