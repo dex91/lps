@@ -24,12 +24,13 @@
       <div class="card text-left" *ngIf="selectedQuestion else loadingQuestion">
         <div class="card-header text-center">Frage Nr. {{selectedQuestion.id}}</div>
         <div class="card-body">
-          F&uuml;r diese Frage gibt es:&nbsp;
+          <small>F&uuml;r diese Frage gibt es:&nbsp;</small>
           <span *ngIf="selectedQuestion.q_points < 2" class="badge bg-primary rounded-pill float-right">{{selectedQuestion.q_points}} Punkt</span>
           <span *ngIf="selectedQuestion.q_points > 1" class="badge bg-primary rounded-pill float-right">{{selectedQuestion.q_points}} Punkte</span>
           <br /><br />
           <h6 class="card-title" style="white-space:pre-wrap;">{{selectedQuestion.q_title}}</h6>
           <p *ngIf="selectedQuestion.q_helptext" class="font-italic text-justify"><i class="bi bi-lightbulb"></i> Kleiner Tipp: {{selectedQuestion.q_helptext}}</p>
+
           <ng-container *ngIf="selectedQuestion.q_answer_type == 3">
             <br />
             <p class="font-italic text-justify"><i class="bi bi-mortarboard"></i> Dies ist eine reine Textl&ouml;sung!</p>

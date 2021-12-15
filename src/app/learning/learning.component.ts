@@ -11,14 +11,14 @@ import { Router, ActivatedRoute, Event, NavigationEnd } from '@angular/router';
 
 export class LearningComponent implements OnInit {
 
-  frageSelectiert: Boolean = false;
   questions: Question[] = [];
   pool: QuestionPool[] = [];
-  selectedQuestion?: Question;
+
   poolSelected: Boolean = false;
+  frageSelectiert: Boolean = false;
 
+  selectedQuestion?: Question;
   answerByQuestion: Answer = { id: 0, answers: [] };
-
   selectedPool: QuestionPool = { id: 0, poolURIName: "", poolName: ""};
 
   poolURIName: String = "";
@@ -47,12 +47,10 @@ export class LearningComponent implements OnInit {
           {
             if(this.poolSelected)
             {
-              this.getPoolByURIName(this.poolURIName);
-              this.createQuestionList(this.selectedPool.id);
+              this.createQuestionListByPoolURIName(this.poolURIName);
 
               if(this.frageSelectiert)
               {
-                console.log(this.questionURIid);
                 this.getQuestionById(this.questionURIid);
                 this.getAnswerById(this.questionURIid);
               }
@@ -69,19 +67,21 @@ export class LearningComponent implements OnInit {
     */
 
   ngOnInit(): void {
+
    }
 
    createQuestionList(id: Number) {
     this.db.getQuestionsByPoolId(id).subscribe(res => this.questions = res);
    }
 
-   /**
-    * Service aufrufen um einen Fragenpool zu setzen anhand der Übergebenen URL bzw des URINamens.
-    * @param uri String in der Datenbank vom Pool
-    */
-    getPoolByURIName(uri: String) {
-      this.db.getPoolByURIName(uri).subscribe(res => this.selectedPool = res);
-     }
+   createQuestionListByPoolURIName(uri: String) {
+    this.db.getPoolByURIName(uri).subscribe(res =>
+      {
+        this.selectedPool = res;
+        this.createQuestionList(res.id);
+      }
+      );
+   }
 
    /**
     * Service aufrufen um eine Frage anhand der Übergebenen ID aufzurufen.
