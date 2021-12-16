@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, Output } from '@angular/core';
 import { Answer, Question, QuestionPool } from '../dateninterfaces';
 import { DatabaseMysqlService } from '../database-mysql.service';
 import { Router, ActivatedRoute, Event, NavigationEnd } from '@angular/router';
@@ -8,6 +8,7 @@ import { Router, ActivatedRoute, Event, NavigationEnd } from '@angular/router';
   templateUrl: './learning.component.html',
   styleUrls: ['./learning.component.css']
 })
+
 
 export class LearningComponent implements OnInit {
 
@@ -51,7 +52,7 @@ export class LearningComponent implements OnInit {
 
           if(this.router.url === "/learning")
           {
-          this.db.getPool().subscribe(res => this.pool = res);
+          this.db.getPools().subscribe(res => this.pool = res);
           }
           else
           {
@@ -110,14 +111,5 @@ export class LearningComponent implements OnInit {
     */
    getAnswerById(id: Number) {
     this.db.getAnswerById(id).subscribe(res => this.answerByQuestion = res);
-   }
-
-  /**
-    * Da das Datum als UNIX-Timestamp aus der Datenbank kommt müssen wir daraus ein Date-Objekt machen.
-    * @param timestamp Der UNIX-Timestamp zum umwandeln (TYP muss any sein auch wenn im Interface Number angegeben ist!!!!!!)
-    * @return Ein Date-Object für javaScript/TypeScript
-    */
-   formatDate(timestamp: any){
-      return new Date(timestamp * 1000);
    }
 }

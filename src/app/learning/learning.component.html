@@ -49,8 +49,8 @@
           </ul>
         </ng-container>
         <br /><br />
-        <p class="text-muted small">Diese Frage wurde von {{selectedQuestion.q_createdby}} am {{this.formatDate(selectedQuestion.q_created) | date : 'EE dd.MM.YYYY' : undefined : 'de_DE'}} zur Datenbank hinzugef&uuml;gt.</p>
-        <p *ngIf="selectedQuestion.q_edited" class="text-muted small">Zuletzt bearbeitet am {{this.formatDate(selectedQuestion.q_edited) | date : 'EE dd.MM.YYYY' : undefined : 'de_DE'}}</p>
+        <p class="text-muted small">Diese Frage wurde von {{selectedQuestion.q_createdby}} am {{selectedQuestion.q_created | date : 'EE dd.MM.YYYY' : undefined : 'de_DE'}} zur Datenbank hinzugef&uuml;gt.</p>
+        <p *ngIf="selectedQuestion.q_edited.toString() !== 'Invalid Date'" class="text-muted small">Zuletzt bearbeitet am {{selectedQuestion.q_edited | date : 'EE dd.MM.YYYY' : undefined : 'de_DE'}}</p>
         </div>
       </div>
   </div>

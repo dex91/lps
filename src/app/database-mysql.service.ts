@@ -2,7 +2,8 @@ import { Injectable } from '@angular/core';
 import { HttpClient, HttpErrorResponse } from '@angular/common/http';
 import { Observable, throwError, map } from 'rxjs';
 import { retry, catchError } from 'rxjs/operators';
-import { Question, QuestionPool, Answer } from './dateninterfaces';
+import { Question, QuestionRAW, QuestionPool, Answer } from './dateninterfaces';
+import { formatDateninterfaces } from './format-dateninterfaces';
 
 @Injectable({
   providedIn: 'root'
@@ -14,11 +15,7 @@ export class DatabaseMysqlService {
     private apiClient: HttpClient,
     ) { }
 
-  getAllQuestions(): Observable<Question[]> {
-    return this.apiClient.get<Question[]>(`${this.apiRoot}/getQuestions`);
-  }
-
-  getPool(): Observable<QuestionPool[]> {
+  getPools(): Observable<QuestionPool[]> {
     return this.apiClient.get<QuestionPool[]>(`${this.apiRoot}/getPools`);
   }
 
@@ -27,15 +24,21 @@ export class DatabaseMysqlService {
     return this.apiClient.get<QuestionPool>(requestURI);
   }
 
+  getQuestionsByPoolId(id: Number): Observable<Question[]> {
+    return this.apiClient.get<QuestionRAW[]>(`${this.apiRoot}/getQuestionsByPoolId?poolId=${id}`).pipe(
+      retry(3),
+      map(questionRAW => questionRAW.map(question => formatDateninterfaces.formatQuestion(question))),
+      );
+  }
+
   getQuestionById(id: Number): Observable<Question> {
-    return this.apiClient.get<Question>(`${this.apiRoot}/getQuestionById?id=${id}`);
+    return this.apiClient.get<QuestionRAW>(`${this.apiRoot}/getQuestionById?id=${id}`).pipe(
+      retry(3),
+      map(question => formatDateninterfaces.formatQuestion(question)),
+    );
   }
 
   getAnswerById(id: Number): Observable<Answer> {
     return this.apiClient.get<Answer>(`${this.apiRoot}/getAnswerById?id=${id}`);
-  }
-
-  getQuestionsByPoolId(id: Number): Observable<Question[]> {
-    return this.apiClient.get<Question[]>(`${this.apiRoot}/getQuestionsByPoolId?poolId=${id}`);
   }
 }
