@@ -31,7 +31,15 @@ export interface Answer{
 }
 
 export interface QuestionPool{
-  id: Number,
-  poolURIName: String,
-  poolName: String,
+  id?: Number,
+  poolURIName?: String,
+  poolName?: String,
+}
+
+export interface Modus{
+  mode: String,
+  questionSelected?: Boolean,
+  questionPoolSelected?: Boolean,
+  pruefungsmodus?: Boolean,
+  teilpruefung?: Boolean,
 }

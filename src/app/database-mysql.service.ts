@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import { HttpClient, HttpErrorResponse } from '@angular/common/http';
 import { Observable, throwError, map } from 'rxjs';
 import { retry, catchError } from 'rxjs/operators';
-import { Question, QuestionRAW, QuestionPool, Answer } from './dateninterfaces';
+import { Question, QuestionRAW, QuestionPool, Answer, Modus } from './dateninterfaces';
 import { formatDateninterfaces } from './format-dateninterfaces';
 
 @Injectable({
@@ -11,6 +11,8 @@ import { formatDateninterfaces } from './format-dateninterfaces';
 export class DatabaseMysqlService {
 
   apiRoot: String = "https://api.visualnetworks.eu/lps";
+  private modus?: Modus;
+
   constructor(
     private apiClient: HttpClient,
     ) { }
@@ -40,5 +42,22 @@ export class DatabaseMysqlService {
 
   getAnswerById(id: Number): Observable<Answer> {
     return this.apiClient.get<Answer>(`${this.apiRoot}/getAnswerById?id=${id}`);
+  }
+
+  /**
+   * 3 Methoden damit sich Komponenten untereinander unterhalten können.
+   * Wie "Modus" aussieht steht jetzt nur dürr fest....
+   * @param modeObj Das object zum steuern von subkomponenten
+   */
+  setMode(modeObj: Modus): void {
+    this.modus = modeObj;
+  }
+  getMode() {
+    let temp = this.modus;
+    this.clearMode();
+    return temp;
+  }
+  clearMode(): void {
+    this.modus = undefined;
   }
 }

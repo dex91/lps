@@ -1,0 +1,34 @@
+<div *ngIf="selectedQuestion" class="col-mb-8">
+  <div class="card text-left">
+    <div class="card-header text-center">Frage Nr. {{selectedQuestion.id}}</div>
+    <div class="card-body">
+      <small>F&uuml;r diese Frage gibt es:&nbsp;</small>
+      <span *ngIf="selectedQuestion.q_points < 2" class="badge bg-primary rounded-pill float-right">{{selectedQuestion.q_points}} Punkt</span>
+      <span *ngIf="selectedQuestion.q_points > 1" class="badge bg-primary rounded-pill float-right">{{selectedQuestion.q_points}} Punkte</span>
+      <br /><br />
+      <h6 class="card-title" style="white-space:pre-wrap;">{{selectedQuestion.q_title}}</h6>
+      <p *ngIf="selectedQuestion.q_helptext" class="font-italic text-justify"><i class="bi bi-lightbulb"></i> Kleiner Tipp: {{selectedQuestion.q_helptext}}</p>
+
+      <ng-container *ngIf="selectedQuestion.q_answer_type == 3">
+        <br />
+        <p class="font-italic text-justify"><i class="bi bi-mortarboard"></i> Dies ist eine reine Textl&ouml;sung!</p>
+        <div class="list-group-item d-flex justify-content-between align-items-center mb-2 border border-success">
+          {{answerByQuestion.answers[0]}}
+        </div>
+        </ng-container>
+
+      <ng-container *ngIf="answerByQuestion.answers.length > 1">
+        <p *ngIf="selectedQuestion.q_answer_type == 2" class="font-italic text-justify"><i class="bi bi-mortarboard"></i> Bei dieser Frage k&ouml;nnen mehrere Antworten richtig sein.</p>
+      <ul class="list-group list-group-flush">
+        <ng-container *ngFor="let anzeigeAntwort of selectedQuestion.q_answers; index as i">
+          <li *ngIf="answerByQuestion.answers[i] == '1'" class="list-group-item d-flex justify-content-between align-items-center mb-2 border border-success">{{anzeigeAntwort}}</li>
+          <li *ngIf="answerByQuestion.answers[i] == '0'" class="list-group-item d-flex justify-content-between align-items-center mb-2 border border-danger">{{anzeigeAntwort}}</li>
+        </ng-container>
+      </ul>
+    </ng-container>
+    <br /><br />
+    <p class="text-muted small">Diese Frage wurde von {{selectedQuestion.q_createdby}} am {{selectedQuestion.q_created | date : 'EE dd.MM.YYYY' : undefined : 'de_DE'}} zur Datenbank hinzugef&uuml;gt.</p>
+    <p *ngIf="selectedQuestion.q_edited.toString() !== 'Invalid Date'" class="text-muted small">Zuletzt bearbeitet am {{selectedQuestion.q_edited | date : 'EE dd.MM.YYYY' : undefined : 'de_DE'}}</p>
+    </div>
+  </div>
+</div>

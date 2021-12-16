@@ -3,88 +3,15 @@
   <p class="fs-5 text-muted">Hier k&ouml;nnen Sie ganz entspannt jede einzelne Frage aus einem Fragenkatalog im Detail anschauen und lernen.</p>
   <p class="fs-5 text-muted">Wir w&uuml;nschen viel Erfolg beim lernen!</p>
 </div>
+<div class="row row-cols-2 row-cols-md-2 mb-0">
+<lps-poollist *ngIf="!poolSelected"></lps-poollist>
+<lps-questionlist *ngIf="poolSelected"></lps-questionlist>
 
-<div *ngIf="poolSelected && selectedPool else katalog" class="row row-cols-2 row-cols-md-3 mb-3">
-  <div class="col-6 col-md-4">
-    <div class="card">
-      <div class="card-header">{{selectedPool.poolName}}</div>
-      <ul class="list-group list-group-scrollable list-group-flush">
-        <a *ngFor="let question of questions" routerLink="/learning/{{selectedPool.poolURIName}}/{{question.id}}" routerLinkActive="selectedQuestion" class="mb-0 eigeneHoehe h6 text-decoration-none list-group-item d-flex justify-content-between align-items-center">
-          Frage Nr. {{question.id}}
-          <span [ngSwitch]="question.q_answer_type" class="badge bg-primary rounded-pill">
-            <ng-container *ngSwitchCase="1">Single</ng-container>
-            <ng-container *ngSwitchCase="2">Multiple</ng-container>
-            <ng-container *ngSwitchCase="3">Text</ng-container>
-            </span>
-        </a>
-      </ul>
-    </div>
+<div *ngIf="!questionSelected" class="col-mb-8">
+  <div class="card d-flex justify-content-center text-center h-100">
+    <span class="text-primary">Bitte wähle eine Frage aus</span>
   </div>
-  <div class="col-md-8" *ngIf="frageSelectiert else alertShowChooseQuestion;">
-      <div class="card text-left" *ngIf="selectedQuestion else loadingQuestion">
-        <div class="card-header text-center">Frage Nr. {{selectedQuestion.id}}</div>
-        <div class="card-body">
-          <small>F&uuml;r diese Frage gibt es:&nbsp;</small>
-          <span *ngIf="selectedQuestion.q_points < 2" class="badge bg-primary rounded-pill float-right">{{selectedQuestion.q_points}} Punkt</span>
-          <span *ngIf="selectedQuestion.q_points > 1" class="badge bg-primary rounded-pill float-right">{{selectedQuestion.q_points}} Punkte</span>
-          <br /><br />
-          <h6 class="card-title" style="white-space:pre-wrap;">{{selectedQuestion.q_title}}</h6>
-          <p *ngIf="selectedQuestion.q_helptext" class="font-italic text-justify"><i class="bi bi-lightbulb"></i> Kleiner Tipp: {{selectedQuestion.q_helptext}}</p>
-
-          <ng-container *ngIf="selectedQuestion.q_answer_type == 3">
-            <br />
-            <p class="font-italic text-justify"><i class="bi bi-mortarboard"></i> Dies ist eine reine Textl&ouml;sung!</p>
-            <div class="list-group-item d-flex justify-content-between align-items-center mb-2 border border-success">
-              {{answerByQuestion.answers[0]}}
-            </div>
-            </ng-container>
-
-          <ng-container *ngIf="answerByQuestion.answers.length > 1">
-            <p *ngIf="selectedQuestion.q_answer_type == 2" class="font-italic text-justify"><i class="bi bi-mortarboard"></i> Bei dieser Frage k&ouml;nnen mehrere Antworten richtig sein.</p>
-          <ul class="list-group list-group-flush">
-            <ng-container *ngFor="let anzeigeAntwort of selectedQuestion.q_answers; index as i">
-              <li *ngIf="answerByQuestion.answers[i] == '1'" class="list-group-item d-flex justify-content-between align-items-center mb-2 border border-success">{{anzeigeAntwort}}</li>
-              <li *ngIf="answerByQuestion.answers[i] == '0'" class="list-group-item d-flex justify-content-between align-items-center mb-2 border border-danger">{{anzeigeAntwort}}</li>
-            </ng-container>
-          </ul>
-        </ng-container>
-        <br /><br />
-        <p class="text-muted small">Diese Frage wurde von {{selectedQuestion.q_createdby}} am {{selectedQuestion.q_created | date : 'EE dd.MM.YYYY' : undefined : 'de_DE'}} zur Datenbank hinzugef&uuml;gt.</p>
-        <p *ngIf="selectedQuestion.q_edited.toString() !== 'Invalid Date'" class="text-muted small">Zuletzt bearbeitet am {{selectedQuestion.q_edited | date : 'EE dd.MM.YYYY' : undefined : 'de_DE'}}</p>
-        </div>
-      </div>
-  </div>
-  <ng-template #alertShowChooseQuestion>
-    <div class="col-md-8">
-      <div class="card d-flex justify-content-center text-center h-100"><span class="text-primary">Bitte wähle eine Frage aus</span></div>
-    </div>
-  </ng-template>
-  <ng-template #loadingQuestion>
-    <div class="card"><div class="card-body text-center"><div class="spinner-grow text-primary" role="status"></div><br /><span class="text-primary">Lade Frage...</span></div></div>
-  </ng-template>
 </div>
 
-<ng-template #katalog>
-  <div *ngIf="selectedPool else ladekatalog" class="row row-cols-1 row-cols-md-1 mb-3 text-center">
-    <div class="col-md-12">
-      <div class="card d-flex justify-content-center h-100">
-        <div class="card-header">Bitte wähle einen Fragenkatalog aus</div>
-        <ul class="list-group d-flex justify-content-center list-group-flush">
-          <a *ngFor="let pools of pool" routerLink="/learning/{{pools.poolURIName}}/" class="mb-1 h6 text-decoration-none list-group-item d-flex justify-content-between align-items-center">
-            {{pools.poolName}}
-          <span class="badge bg-primary rounded-pill"></span>
-          </a>
-        </ul>
-      </div>
-    </div>
-  </div>
-  </ng-template>
-  <ng-template #ladekatalog>
-    <div class="row row-cols-1 row-cols-md-1 mb-3 text-center">
-      <div class="col-md-12">
-        <div class="card d-flex justify-content-center h-100">
-          <div class="card-body text-center"><div class="spinner-grow text-primary" role="status"></div><br /><span class="text-primary">Lade Fragenkatalog</span></div>
-        </div>
-      </div>
-    </div>
-  </ng-template>
+<lps-question *ngIf="questionSelected"></lps-question>
+</div>

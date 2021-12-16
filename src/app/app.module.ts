@@ -12,6 +12,9 @@ import { LearningComponent } from './learning/learning.component';
 import { TestYourselfComponent } from './test-yourself/test-yourself.component';
 import { SimulateTestComponent } from './simulate-test/simulate-test.component';
 import { HttpClientModule } from '@angular/common/http';
+import { PoollistComponent } from './poollist/poollist.component';
+import { QuestionlistComponent } from './questionlist/questionlist.component';
+import { QuestionComponent } from './question/question.component';
 
 registerLocaleData(localeDe);
 
@@ -24,6 +27,9 @@ registerLocaleData(localeDe);
     LearningComponent,
     TestYourselfComponent,
     SimulateTestComponent,
+    PoollistComponent,
+    QuestionlistComponent,
+    QuestionComponent,
   ],
   imports: [
     BrowserModule,

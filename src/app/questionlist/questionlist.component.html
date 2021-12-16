@@ -1,0 +1,18 @@
+<ng-template #loadingQuestion>
+  <div class="card"><div class="card-body text-center"><div class="spinner-grow text-primary" role="status"></div><br /><span class="text-primary">Lade Fragenliste...</span></div></div>
+</ng-template>
+<div *ngIf="questionPool else loadingQuestion" class="col-mb-8">
+  <div class="card">
+    <div class="card-header">{{questionPool.poolName}}</div>
+    <ul class="list-group list-group-scrollable list-group-flush">
+      <a *ngFor="let question of questions" routerLink="/learning/{{questionPool.poolURIName}}/{{question.id}}" routerLinkActive="selectedQuestion" class="mb-0 eigeneHoehe h6 text-decoration-none list-group-item d-flex justify-content-between align-items-center">
+        Frage Nr. {{question.id}}
+        <span [ngSwitch]="question.q_answer_type" class="badge bg-primary rounded-pill">
+          <ng-container *ngSwitchCase="1">Single</ng-container>
+          <ng-container *ngSwitchCase="2">Multiple</ng-container>
+          <ng-container *ngSwitchCase="3">Text</ng-container>
+        </span>
+      </a>
+    </ul>
+  </div>
+</div>
