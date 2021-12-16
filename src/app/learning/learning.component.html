@@ -9,7 +9,7 @@
     <div class="card">
       <div class="card-header">{{selectedPool.poolName}}</div>
       <ul class="list-group list-group-scrollable list-group-flush">
-        <a *ngFor="let question of questions" routerLink="/learning/{{selectedPool.poolURIName}}/{{question.id}}" class="mb-1 h6 text-decoration-none list-group-item d-flex justify-content-between align-items-center">
+        <a *ngFor="let question of questions" routerLink="/learning/{{selectedPool.poolURIName}}/{{question.id}}" routerLinkActive="selectedQuestion" class="mb-0 eigeneHoehe h6 text-decoration-none list-group-item d-flex justify-content-between align-items-center">
           Frage Nr. {{question.id}}
           <span [ngSwitch]="question.q_answer_type" class="badge bg-primary rounded-pill">
             <ng-container *ngSwitchCase="1">Single</ng-container>

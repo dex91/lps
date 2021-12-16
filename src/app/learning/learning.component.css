@@ -1,6 +1,16 @@
 .list-group-scrollable{
   max-height: 246px;
   margin-bottom: 4px;
+  margin-top: 0px;
   overflow-y: scroll;
   overflow-x: hidden;
+}
+
+.eigeneHoehe{
+  height: 120px;
+}
+
+.selectedQuestion {
+  /* background-color: #f7f7f7; OLD ONE */
+  background-color: #ededed;
 }

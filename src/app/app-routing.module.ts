@@ -8,14 +8,12 @@ import { TestYourselfComponent } from './test-yourself/test-yourself.component';
 const routes: Routes = [
   { path: 'start', component: StartsiteComponent },
   { path: 'learning', component: LearningComponent },
-
   { path: 'learning/:poolURIName',
     children: [
-      { path: ':questionId', component: LearningComponent },
-      { path: '', component: LearningComponent },
+      { path: ':questionId', pathMatch: 'full', component: LearningComponent },
+      { path: '', pathMatch: 'full', component: LearningComponent },
     ]
   },
-
   { path: 'vorpruefung', component: TestYourselfComponent },
   { path: 'vorpruefung/:questionId', component: TestYourselfComponent },
   { path: 'pruefung', component: SimulateTestComponent },

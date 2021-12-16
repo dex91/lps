@@ -11,19 +11,29 @@ import { Router, ActivatedRoute, Event, NavigationEnd } from '@angular/router';
 
 export class LearningComponent implements OnInit {
 
+  // Objekte als ARRAY (zum iterrieren)
   questions: Question[] = [];
   pool: QuestionPool[] = [];
 
+  // Prüfvariablen für das Front-end
   poolSelected: Boolean = false;
   frageSelectiert: Boolean = false;
 
+  // Einzelne Objekte
   selectedQuestion?: Question;
   answerByQuestion: Answer = { id: 0, answers: [] };
   selectedPool: QuestionPool = { id: 0, poolURIName: "", poolName: ""};
 
+  // Nützliche Helferlein
   poolURIName: String = "";
   questionURIid: Number = 0;
 
+  /**
+   * Router-event abonnieren und anhand des "NavigationEnd" Status den Lernmodus aufbauen.
+   * @param route Object der Aktuellen Route (Klassenaufruf)
+   * @param router Object des kompletten Routers (Klassenaufruf)
+   * @param db Object unseres Services für die API und dessen Verbindung zum MySQL-Backend (Klassenaufruf)
+   */
   constructor(
     private route: ActivatedRoute,
     private router: Router,
@@ -62,18 +72,21 @@ export class LearningComponent implements OnInit {
 
     }
 
-   /**
-    * Beim Start dieser Komponente den Fragenpool laden zum auswählen....
-    */
-
   ngOnInit(): void {
 
    }
-
+   /**
+    * Service aufrufen um die Liste an Fragen als Observable zurück zu bekommen anhand der ID des Fragenpools.
+    * @param id Eindeutige Nummer des Fragenpools in der Datenbank
+    */
    createQuestionList(id: Number) {
     this.db.getQuestionsByPoolId(id).subscribe(res => this.questions = res);
    }
 
+   /**
+    * Service aufrufen um genau einen Fragenpool anhand eines Snapshots (parameter der URL) aus der Datenbank zu holen.
+    * @param uri Short-name (bsp.: LPIC-01) des Fragenpools.
+    */
    createQuestionListByPoolURIName(uri: String) {
     this.db.getPoolByURIName(uri).subscribe(res =>
       {
