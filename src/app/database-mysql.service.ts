@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpErrorResponse } from '@angular/common/http';
-import { Observable } from 'rxjs';
-import { retry } from 'rxjs/operators';
+import { Observable, throwError, map } from 'rxjs';
+import { retry, catchError } from 'rxjs/operators';
 import { Question, QuestionPool, Answer } from './dateninterfaces';
 
 @Injectable({
