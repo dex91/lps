@@ -19,7 +19,9 @@ export class QuestionComponent implements OnInit {
   constructor(
     private db: DatabaseMysqlService,
     private route: ActivatedRoute,
-  ) {}
+  ) {
+    this.modus = this.db.getMode();
+  }
 
   ngOnInit(): void {
 

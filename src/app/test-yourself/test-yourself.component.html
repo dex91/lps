@@ -1,1 +1,18 @@
-<p>test-yourself works!</p>
+<div class="pricing-header p-3 pb-md-4 mx-auto text-center">
+  <h1 class="display-4 fw-normal">Teilpr&uuml;fungsmodus</h1>
+  <p class="fs-5 text-muted">Hier geht es darum den gelernten Fragenkatalog <i>ohne</i> viel Druck abzufragen.<br />Sie bekommen direkt ein Feedback ob die ausgew&auml;hlte Antwort richtig ist.<br />Bei Fragen mit dem Text-Symbol m&uuml;ssen Sie diese absenden.</p>
+  <p class="fs-5 text-muted">Wir w&uuml;nschen viel Erfolg!</p>
+</div>
+<lps-poollist *ngIf="!poolSelected"></lps-poollist>
+
+<div class="row row-cols-2 row-cols-md-2 mb-0">
+<lps-questionlist *ngIf="poolSelected"></lps-questionlist>
+
+<div *ngIf="!questionSelected && poolSelected" class="col-mb-8">
+  <div class="card d-flex justify-content-center text-center h-100">
+    <span class="text-primary">Bitte wähle eine Frage aus</span>
+  </div>
+</div>
+
+<lps-question *ngIf="questionSelected"></lps-question>
+</div>

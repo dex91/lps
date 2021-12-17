@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { QuestionPool, Modus } from '../dateninterfaces';
 import { DatabaseMysqlService } from '../database-mysql.service';
-import { ActivatedRoute, Router } from '@angular/router';
+import { ActivatedRoute } from '@angular/router';
 
 @Component({
   selector: 'lps-poollist',
@@ -10,13 +10,16 @@ import { ActivatedRoute, Router } from '@angular/router';
 })
 export class PoollistComponent implements OnInit {
 
+  poolURIName = String(this.route.snapshot.paramMap.get("poolURIName"));
+  pools: QuestionPool[] = [];
+  modus?: Modus;
+
   constructor(
     private db: DatabaseMysqlService,
     private route: ActivatedRoute,
-  ) { }
-
-  poolURIName = String(this.route.snapshot.paramMap.get("poolURIName"));
-  pools: QuestionPool[] = [];
+  ) {
+    this.modus = this.db.getMode();
+   }
 
   ngOnInit(): void {
     this.db.getPools().subscribe(res => this.pools = res);

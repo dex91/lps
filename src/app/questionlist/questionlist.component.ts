@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { DatabaseMysqlService } from '../database-mysql.service';
-import { Question, QuestionPool } from '../dateninterfaces';
+import { Modus, Question, QuestionPool } from '../dateninterfaces';
 
 @Component({
   selector: 'lps-questionlist',
@@ -10,14 +10,18 @@ import { Question, QuestionPool } from '../dateninterfaces';
 })
 export class QuestionlistComponent implements OnInit {
 
+  questions: Question[] = [];
+  questionPool?: QuestionPool;
+  poolURIName = String(this.route.snapshot.paramMap.get("poolURIName"));
+  questionURIid = Number(this.route.snapshot.paramMap.get("questionId"));
+  modus?: Modus;
+
   constructor(
     private db: DatabaseMysqlService,
-    private route: ActivatedRoute) { }
-
-    questions: Question[] = [];
-    questionPool?: QuestionPool;
-    poolURIName = String(this.route.snapshot.paramMap.get("poolURIName"));
-    questionURIid = Number(this.route.snapshot.paramMap.get("questionId"));
+    private route: ActivatedRoute,
+    ) {
+      this.modus = this.db.getMode();
+    }
 
   ngOnInit(): void {
 

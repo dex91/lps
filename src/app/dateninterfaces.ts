@@ -38,8 +38,6 @@ export interface QuestionPool{
 
 export interface Modus{
   mode: String,
-  questionSelected?: Boolean,
-  questionPoolSelected?: Boolean,
   pruefungsmodus?: Boolean,
   teilpruefung?: Boolean,
 }

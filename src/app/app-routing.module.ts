@@ -14,10 +14,23 @@ const routes: Routes = [
       { path: '', pathMatch: 'full', component: LearningComponent },
     ]
   },
+
   { path: 'vorpruefung', component: TestYourselfComponent },
-  { path: 'vorpruefung/:questionId', component: TestYourselfComponent },
+  { path: 'vorpruefung/:poolURIName',
+    children: [
+      { path: ':questionId', pathMatch: 'full', component: TestYourselfComponent },
+      { path: '', pathMatch: 'full', component: TestYourselfComponent },
+    ]
+  },
+
   { path: 'pruefung', component: SimulateTestComponent },
-  { path: 'pruefung/:questionid', component: SimulateTestComponent },
+  { path: 'pruefung/:poolURIName',
+    children: [
+      { path: ':questionId', pathMatch: 'full', component: SimulateTestComponent },
+      { path: '', pathMatch: 'full', component: SimulateTestComponent },
+    ]
+  },
+
   { path: '',   redirectTo: '/start', pathMatch: 'full' },
   { path: '**', component: StartsiteComponent },
 ];
