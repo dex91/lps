@@ -1,6 +1,3 @@
-<ng-template #loadingQuestion>
-  <div class="card"><div class="card-body text-center"><div class="spinner-grow text-primary" role="status"></div><br /><span class="text-primary">Lade Fragenliste...</span></div></div>
-</ng-template>
 <div *ngIf="questionPool else loadingQuestion" class="col-mb-8">
   <div class="card">
     <div class="card-header">{{questionPool.poolName}}</div>
@@ -16,3 +13,7 @@
     </ul>
   </div>
 </div>
+
+<ng-template #loadingQuestion>
+  <div class="card"><div class="card-body text-center"><div class="spinner-grow text-primary" role="status"></div><br /><span class="text-primary">Lade Fragenliste...</span></div></div>
+</ng-template>

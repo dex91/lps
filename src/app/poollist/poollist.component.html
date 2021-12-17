@@ -1,4 +1,18 @@
-<ng-template #katalogladen>
+<div *ngIf="pools else ladekatalog" class="row row-cols-1 row-cols-md-1 mb-3 text-center">
+  <div class="col-md-12">
+    <div class="card d-flex justify-content-center h-100">
+      <div class="card-header">Bitte wähle einen Fragenkatalog aus</div>
+      <ul class="list-group d-flex justify-content-center list-group-flush">
+        <a *ngFor="let pool of pools" routerLink="/learning/{{pool.poolURIName}}/" class="mb-1 h6 text-decoration-none list-group-item d-flex justify-content-between align-items-center">
+          {{pool.poolName}}
+          <!-- <span class="badge bg-primary rounded-pill"></span> -->
+        </a>
+      </ul>
+    </div>
+  </div>
+</div>
+
+<ng-template #ladekatalog>
   <div class="row row-cols-1 row-cols-md-1 mb-3 text-center">
     <div class="col-md-12">
       <div class="card d-flex justify-content-center h-100">
@@ -7,17 +21,3 @@
     </div>
   </div>
 </ng-template>
-
-  <div *ngif="this.irgentwas else katalogladen" class="row row-cols-1 row-cols-md-1 mb-3 text-center">
-    <div class="col-md-12">
-      <div class="card d-flex justify-content-center h-100">
-        <div class="card-header">Bitte wähle einen Fragenkatalog aus</div>
-        <ul class="list-group d-flex justify-content-center list-group-flush">
-          <a *ngFor="let pool of pools" routerLink="/learning/{{pool.poolURIName}}/" class="mb-1 h6 text-decoration-none list-group-item d-flex justify-content-between align-items-center">
-            {{pool.poolName}}
-          <!-- <span class="badge bg-primary rounded-pill"></span> -->
-          </a>
-        </ul>
-      </div>
-    </div>
-  </div>
