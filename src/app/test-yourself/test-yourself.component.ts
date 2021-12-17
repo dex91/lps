@@ -23,7 +23,7 @@ export class TestYourselfComponent implements OnInit {
     private db: DatabaseMysqlService,
     private route: ActivatedRoute,
   ) {
-    this.modus = { ...this.modus, mode: this.moduleModus };
+    this.modus = { ...this.modus, mode: this.moduleModus, teilpruefung: true };
     this.db.setMode(this.modus);
   }
 

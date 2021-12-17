@@ -54,7 +54,7 @@ export class DatabaseMysqlService {
   }
   getMode() {
     let temp = this.modus;
-    this.clearMode();
+    //this.clearMode(); // Wenn aktiviert bekommen wir in child-components undefined :(
     return temp;
   }
   clearMode(): void {

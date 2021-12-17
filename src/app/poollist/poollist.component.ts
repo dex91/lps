@@ -11,7 +11,7 @@ import { ActivatedRoute } from '@angular/router';
 export class PoollistComponent implements OnInit {
 
   poolURIName = String(this.route.snapshot.paramMap.get("poolURIName"));
-  pools: QuestionPool[] = [];
+  pools?: QuestionPool[];
   modus?: Modus;
 
   constructor(

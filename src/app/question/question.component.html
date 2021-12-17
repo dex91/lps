@@ -1,36 +1,100 @@
-<div *ngIf="selectedQuestion" class="col-mb-8">
-  <div class="card text-left">
-    <div class="card-header text-center">Frage Nr. {{selectedQuestion.id}}</div>
-    <div class="card-body">
-      <small>F&uuml;r diese Frage gibt es:&nbsp;</small>
-      <span *ngIf="selectedQuestion.q_points < 2" class="badge bg-primary rounded-pill float-right">{{selectedQuestion.q_points}} Punkt</span>
-      <span *ngIf="selectedQuestion.q_points > 1" class="badge bg-primary rounded-pill float-right">{{selectedQuestion.q_points}} Punkte</span>
+<ng-container *ngIf="modus?.lernmodus">
+  <div *ngIf="selectedQuestion" class="col-mb-8">
+    <div class="card text-left">
+      <div class="card-header text-center">Frage Nr. {{selectedQuestion.id}}</div>
+      <div class="card-body">
+        <small>F&uuml;r diese Frage gibt es:&nbsp;</small>
+        <span *ngIf="selectedQuestion.q_points < 2" class="badge bg-primary rounded-pill float-right">{{selectedQuestion.q_points}} Punkt</span>
+        <span *ngIf="selectedQuestion.q_points > 1" class="badge bg-primary rounded-pill float-right">{{selectedQuestion.q_points}} Punkte</span>
+        <br /><br />
+        <h6 class="card-title" style="white-space:pre-wrap;">{{selectedQuestion.q_title}}</h6>
+        <p *ngIf="selectedQuestion.q_helptext" class="font-italic text-justify"><i class="bi bi-lightbulb"></i> Kleiner Tipp: {{selectedQuestion.q_helptext}}</p>
+
+        <ng-container *ngIf="selectedQuestion.q_answer_type == 3">
+          <br />
+          <p class="font-italic text-justify"><i class="bi bi-mortarboard"></i> Dies ist eine reine Textl&ouml;sung!</p>
+          <div class="list-group-item d-flex justify-content-between align-items-center mb-2 border border-success">
+            {{answerByQuestion.answers[0]}}
+          </div>
+          </ng-container>
+
+        <ng-container #singleMultipleAnswers *ngIf="selectedQuestion.q_answer_type == 1 || selectedQuestion.q_answer_type == 2 && answerByQuestion.answers.length > 1">
+          <p *ngIf="selectedQuestion.q_answer_type == 2" class="font-italic text-justify"><i class="bi bi-mortarboard"> Bei dieser Frage k&ouml;nnen mehrere Antworten richtig sein.</i></p>
+        <ul class="list-group list-group-flush">
+          <ng-container *ngFor="let anzeigeAntwort of selectedQuestion.q_answers; index as i">
+            <li *ngIf="answerByQuestion.answers[i] == '1'" class="list-group-item d-flex justify-content-between align-items-center mb-2 border border-success">{{anzeigeAntwort}}</li>
+            <li *ngIf="answerByQuestion.answers[i] == '0'" class="list-group-item d-flex justify-content-between align-items-center mb-2 border border-danger">{{anzeigeAntwort}}</li>
+          </ng-container>
+        </ul>
+      </ng-container>
+
+
       <br /><br />
-      <h6 class="card-title" style="white-space:pre-wrap;">{{selectedQuestion.q_title}}</h6>
-      <p *ngIf="selectedQuestion.q_helptext" class="font-italic text-justify"><i class="bi bi-lightbulb"></i> Kleiner Tipp: {{selectedQuestion.q_helptext}}</p>
-
-      <ng-container *ngIf="selectedQuestion.q_answer_type == 3">
-        <br />
-        <p class="font-italic text-justify"><i class="bi bi-mortarboard"></i> Dies ist eine reine Textl&ouml;sung!</p>
-        <div class="list-group-item d-flex justify-content-between align-items-center mb-2 border border-success">
-          {{answerByQuestion.answers[0]}}
-        </div>
-        </ng-container>
-
-      <ng-container #singleMultipleAnswers *ngIf="selectedQuestion.q_answer_type == 1 || selectedQuestion.q_answer_type == 2 && answerByQuestion.answers.length > 1">
-        <p *ngIf="selectedQuestion.q_answer_type == 2" class="font-italic text-justify"><i class="bi bi-mortarboard"></i> Bei dieser Frage k&ouml;nnen mehrere Antworten richtig sein.</p>
-      <ul class="list-group list-group-flush">
-        <ng-container *ngFor="let anzeigeAntwort of selectedQuestion.q_answers; index as i">
-          <li *ngIf="answerByQuestion.answers[i] == '1'" class="list-group-item d-flex justify-content-between align-items-center mb-2 border border-success">{{anzeigeAntwort}}</li>
-          <li *ngIf="answerByQuestion.answers[i] == '0'" class="list-group-item d-flex justify-content-between align-items-center mb-2 border border-danger">{{anzeigeAntwort}}</li>
-        </ng-container>
-      </ul>
-    </ng-container>
-
-
-    <br /><br />
-    <p class="text-muted small">Diese Frage wurde von {{selectedQuestion.q_createdby}} am {{selectedQuestion.q_created | date : 'EE dd.MM.YYYY' : undefined : 'de_DE'}} zur Datenbank hinzugef&uuml;gt.</p>
-    <p *ngIf="selectedQuestion.q_edited.toString() !== 'Invalid Date'" class="text-muted small">Zuletzt bearbeitet am {{selectedQuestion.q_edited | date : 'EE dd.MM.YYYY' : undefined : 'de_DE'}}</p>
+      <p class="text-muted small">Diese Frage wurde von {{selectedQuestion.q_createdby}} am {{selectedQuestion.q_created | date : 'EE dd.MM.YYYY' : undefined : 'de_DE'}} zur Datenbank hinzugef&uuml;gt.</p>
+      <p *ngIf="selectedQuestion.q_edited.toString() !== 'Invalid Date'" class="text-muted small">Zuletzt bearbeitet am {{selectedQuestion.q_edited | date : 'EE dd.MM.YYYY' : undefined : 'de_DE'}}</p>
+      </div>
     </div>
   </div>
-</div>
+</ng-container>
+
+
+<ng-container *ngIf="modus?.teilpruefung">
+  <div *ngIf="selectedQuestion" class="col-mb-8">
+    <div class="card text-left">
+      <div class="card-header text-center">Frage Nr. {{selectedQuestion.id}}</div>
+      <div class="card-body">
+        <small>F&uuml;r diese Frage gibt es:&nbsp;</small>
+        <span *ngIf="selectedQuestion.q_points < 2" class="badge bg-primary rounded-pill float-right">{{selectedQuestion.q_points}} Punkt</span>
+        <span *ngIf="selectedQuestion.q_points > 1" class="badge bg-primary rounded-pill float-right">{{selectedQuestion.q_points}} Punkte</span>
+        <br /><br />
+        <p *ngIf="selectedQuestion.q_answer_type == 2" class="font-italic text-justify"><i class="bi bi-mortarboard"> Bei dieser Frage k&ouml;nnen mehrere Antworten richtig sein.</i></p>
+
+        <ng-container *ngIf="selectedQuestion.q_helptext && !showhelp">
+          <p class="text-justify align-items-center" style="float: right;">
+            <button (click)="toggleHelp();" type="button" class="btn btn-outline-warning btn-sm">
+              <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-lightbulb" viewBox="0 0 16 16"><path d="M2 6a6 6 0 1 1 10.174 4.31c-.203.196-.359.4-.453.619l-.762 1.769A.5.5 0 0 1 10.5 13a.5.5 0 0 1 0 1 .5.5 0 0 1 0 1l-.224.447a1 1 0 0 1-.894.553H6.618a1 1 0 0 1-.894-.553L5.5 15a.5.5 0 0 1 0-1 .5.5 0 0 1 0-1 .5.5 0 0 1-.46-.302l-.761-1.77a1.964 1.964 0 0 0-.453-.618A5.984 5.984 0 0 1 2 6zm6-5a5 5 0 0 0-3.479 8.592c.263.254.514.564.676.941L5.83 12h4.342l.632-1.467c.162-.377.413-.687.676-.941A5 5 0 0 0 8 1z"></path></svg>
+              <small style="color: #000000;">&nbsp;Klick f&uuml;r Hilfe ;)</small>
+            </button>
+          </p>
+        </ng-container>
+
+        <ng-container *ngIf="selectedQuestion.q_helptext && showhelp">
+            <ul class="list-group list-group-flush">
+              <li class="list-group-item d-flex align-items-left mb-2 border border-warning" (click)="toggleHelp();">
+                <svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" fill="#ffc107" class="bi bi-chat-right-text" viewBox="0 0 16 16">
+                  <path d="M2 1a1 1 0 0 0-1 1v8a1 1 0 0 0 1 1h9.586a2 2 0 0 1 1.414.586l2 2V2a1 1 0 0 0-1-1H2zm12-1a2 2 0 0 1 2 2v12.793a.5.5 0 0 1-.854.353l-2.853-2.853a1 1 0 0 0-.707-.293H2a2 2 0 0 1-2-2V2a2 2 0 0 1 2-2h12z"/>
+                  <path d="M3 3.5a.5.5 0 0 1 .5-.5h9a.5.5 0 0 1 0 1h-9a.5.5 0 0 1-.5-.5zM3 6a.5.5 0 0 1 .5-.5h9a.5.5 0 0 1 0 1h-9A.5.5 0 0 1 3 6zm0 2.5a.5.5 0 0 1 .5-.5h5a.5.5 0 0 1 0 1h-5a.5.5 0 0 1-.5-.5z"/>
+                </svg>
+                <small style="color: #000000;">&nbsp;&nbsp;Kleiner Tipp:&nbsp;{{selectedQuestion.q_helptext}}</small>
+              </li>
+            </ul>
+        </ng-container>
+
+        <h6 class="card-title" style="white-space:pre-wrap;">{{selectedQuestion.q_title}}</h6>
+
+        <ng-container *ngIf="selectedQuestion.q_answer_type == 3">
+          <br />
+          <p class="font-italic text-justify"><i class="bi bi-mortarboard"></i> Bitte gebe die L&ouml;sung in das Feld ein</p>
+          <div class="d-flex justify-content-center">
+            <div class="p-2"><input type="text" name="textanswer" class="form-control form-control-sm" placeholder="Deine Antwort"></div>
+            <div class="p-2">
+              <button type="submit" class="btn btn-outline-primary btn-sm">
+                <svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" fill="currentColor" class="bi bi-arrow-right-square" viewBox="0 0 16 16">
+                  <path fill-rule="evenodd" d="M15 2a1 1 0 0 0-1-1H2a1 1 0 0 0-1 1v12a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1V2zM0 2a2 2 0 0 1 2-2h12a2 2 0 0 1 2 2v12a2 2 0 0 1-2 2H2a2 2 0 0 1-2-2V2zm4.5 5.5a.5.5 0 0 0 0 1h5.793l-2.147 2.146a.5.5 0 0 0 .708.708l3-3a.5.5 0 0 0 0-.708l-3-3a.5.5 0 1 0-.708.708L10.293 7.5H4.5z"/>
+                </svg>
+              </button>
+            </div>
+          </div>
+          </ng-container>
+
+        <ng-container #singleMultipleAnswers *ngIf="selectedQuestion.q_answer_type == 1 || selectedQuestion.q_answer_type == 2">
+        <ul class="list-group list-group-flush">
+          <ng-container *ngFor="let anzeigeAntwort of selectedQuestion.q_answers; index as i">
+            <button (click)="checkanswer(selectedQuestion.id, i);" [ngClass]="{'border-success': beantWortetStatus, 'border-danger': !beantWortetStatus}" class="list-group-item d-flex justify-content-between align-items-center mb-2 border">{{anzeigeAntwort}}</button>
+          </ng-container>
+        </ul>
+      </ng-container>
+      </div>
+    </div>
+  </div>
+</ng-container>

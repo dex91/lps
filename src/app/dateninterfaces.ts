@@ -40,4 +40,5 @@ export interface Modus{
   mode: String,
   pruefungsmodus?: Boolean,
   teilpruefung?: Boolean,
+  lernmodus?: Boolean,
 }
