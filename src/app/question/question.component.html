@@ -17,7 +17,7 @@
         </div>
         </ng-container>
 
-      <ng-container *ngIf="answerByQuestion.answers.length > 1">
+      <ng-container #singleMultipleAnswers *ngIf="selectedQuestion.q_answer_type == 1 || selectedQuestion.q_answer_type == 2 && answerByQuestion.answers.length > 1">
         <p *ngIf="selectedQuestion.q_answer_type == 2" class="font-italic text-justify"><i class="bi bi-mortarboard"></i> Bei dieser Frage k&ouml;nnen mehrere Antworten richtig sein.</p>
       <ul class="list-group list-group-flush">
         <ng-container *ngFor="let anzeigeAntwort of selectedQuestion.q_answers; index as i">
@@ -26,6 +26,8 @@
         </ng-container>
       </ul>
     </ng-container>
+
+
     <br /><br />
     <p class="text-muted small">Diese Frage wurde von {{selectedQuestion.q_createdby}} am {{selectedQuestion.q_created | date : 'EE dd.MM.YYYY' : undefined : 'de_DE'}} zur Datenbank hinzugef&uuml;gt.</p>
     <p *ngIf="selectedQuestion.q_edited.toString() !== 'Invalid Date'" class="text-muted small">Zuletzt bearbeitet am {{selectedQuestion.q_edited | date : 'EE dd.MM.YYYY' : undefined : 'de_DE'}}</p>
