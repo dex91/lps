@@ -1,4 +1,14 @@
-  <div *ngIf="pools else ladekatalog" class="row row-cols-1 row-cols-md-1 mb-3 text-center">
+<ng-template #katalogladen>
+  <div class="row row-cols-1 row-cols-md-1 mb-3 text-center">
+    <div class="col-md-12">
+      <div class="card d-flex justify-content-center h-100">
+        <div class="card-body text-center"><div class="spinner-grow text-primary" role="status"></div><br /><span class="text-primary">Lade Fragenkatalog</span></div>
+      </div>
+    </div>
+  </div>
+</ng-template>
+
+  <div *ngif="this.irgentwas else katalogladen" class="row row-cols-1 row-cols-md-1 mb-3 text-center">
     <div class="col-md-12">
       <div class="card d-flex justify-content-center h-100">
         <div class="card-header">Bitte wähle einen Fragenkatalog aus</div>
@@ -11,13 +21,3 @@
       </div>
     </div>
   </div>
-
-  <ng-template #ladekatalog>
-    <div class="row row-cols-1 row-cols-md-1 mb-3 text-center">
-      <div class="col-md-12">
-        <div class="card d-flex justify-content-center h-100">
-          <div class="card-body text-center"><div class="spinner-grow text-primary" role="status"></div><br /><span class="text-primary">Lade Fragenkatalog</span></div>
-        </div>
-      </div>
-    </div>
-  </ng-template>

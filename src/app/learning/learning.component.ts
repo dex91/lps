@@ -4,7 +4,7 @@ import { DatabaseMysqlService } from '../database-mysql.service';
 import { Router, ActivatedRoute, Event, NavigationEnd } from '@angular/router';
 
 @Component({
-  selector: 'lps-start',
+  selector: 'lps-learning',
   templateUrl: './learning.component.html',
   styleUrls: ['./learning.component.css']
 })
@@ -20,20 +20,12 @@ export class LearningComponent implements OnInit {
   modus?: Modus;
   moduleModus: String = "learning";
 
+  stop: Boolean = false;
+
   constructor(
     private db: DatabaseMysqlService,
     private route: ActivatedRoute,
-    private router: Router,
-    ) {
-
-      this.router.events.subscribe((event: Event) => {
-
-        if (event instanceof NavigationEnd) {
-
-        }
-    });
-
-    }
+    ) { }
 
   ngOnInit(): void {
 

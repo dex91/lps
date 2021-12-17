@@ -3,11 +3,12 @@
   <p class="fs-5 text-muted">Hier k&ouml;nnen Sie ganz entspannt jede einzelne Frage aus einem Fragenkatalog im Detail anschauen und lernen.</p>
   <p class="fs-5 text-muted">Wir w&uuml;nschen viel Erfolg beim lernen!</p>
 </div>
-<div class="row row-cols-2 row-cols-md-2 mb-0">
 <lps-poollist *ngIf="!poolSelected"></lps-poollist>
+
+<div class="row row-cols-2 row-cols-md-2 mb-0">
 <lps-questionlist *ngIf="poolSelected"></lps-questionlist>
 
-<div *ngIf="!questionSelected" class="col-mb-8">
+<div *ngIf="!questionSelected && poolSelected" class="col-mb-8">
   <div class="card d-flex justify-content-center text-center h-100">
     <span class="text-primary">Bitte wähle eine Frage aus</span>
   </div>
