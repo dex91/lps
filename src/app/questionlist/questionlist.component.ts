@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { DatabaseMysqlService } from '../database-mysql.service';
-import { Modus, Question, QuestionPool } from '../dateninterfaces';
+import { Question, QuestionPool, Modus } from '../dateninterfaces';
 
 @Component({
   selector: 'lps-questionlist',
@@ -10,25 +10,33 @@ import { Modus, Question, QuestionPool } from '../dateninterfaces';
 })
 export class QuestionlistComponent implements OnInit {
 
-  questions: Question[] = [];
-  questionPool?: QuestionPool;
-  poolURIName = String(this.route.snapshot.paramMap.get("poolURIName"));
-  questionURIid = Number(this.route.snapshot.paramMap.get("questionId"));
+  poolURIName: String = "";
   modus?: Modus;
+  questions?: Question[];
+  questionPool?: QuestionPool;
 
   constructor(
     private db: DatabaseMysqlService,
     private route: ActivatedRoute,
     ) {
+
       this.modus = this.db.getMode();
+
+      this.route.paramMap.subscribe(nav =>{
+        this.poolURIName = String(nav.get('poolURIName'));
+      });
+
+      this.db.APIgetPoolByURIName(this.poolURIName).subscribe(pool => {
+
+        this.questionPool = pool;
+
+        this.db.APIgetQuestionsByPoolId(Number(pool.id)).subscribe(qlist => this.questions = qlist);
+
+      });
+
     }
 
   ngOnInit(): void {
-
-    this.db.getPoolByURIName(this.poolURIName).subscribe(res => {
-      this.questionPool = res;
-      this.db.getQuestionsByPoolId(res.id || 0).subscribe(res => this.questions = res);
-    } );
 
   }
 

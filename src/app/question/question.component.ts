@@ -10,14 +10,23 @@ import { ActivatedRoute, NavigationStart, Router, Event } from '@angular/router'
 })
 export class QuestionComponent implements OnInit {
 
+  // Für die API und den Modus "globale" variablen
+  questionURIid: Number = 0;
+  poolURIName: String = "";
+  modus?: Modus;
 
+  // Einzelfrage (lernmodus)
   selectedQuestion?: Question;
   answerByQuestion: Answer = { id: 0, answers: [] };
-  answerByUser: Answer = { id: 0, answers: [] };
-  questionURIid: Number = 0;
-  modus?: Modus;
+
+  // Variablen für Teil und Prüfungsmodus
   showhelp: Boolean = false;
-  beantWortetStatus: Boolean = false;
+  answerInput: String = "";
+  resetButton: Boolean = false;
+
+  //Variablen für den Teilprüfungsmodus
+  vorpruefungQuestionList: Question[] = []; // Hier mit ARRAY da wir daten zwischenspeichern müssen.
+  questionIDForArray: any;
 
   constructor(
     private db: DatabaseMysqlService,
@@ -37,11 +46,34 @@ export class QuestionComponent implements OnInit {
   }
 
   ngOnInit(): void {
-
     this.route.paramMap.subscribe(nav =>{
+
       this.questionURIid = Number(nav.get('questionId'));
-      this.db.getQuestionById(this.questionURIid).subscribe(res => this.selectedQuestion = res);
-      this.db.getAnswerById(this.questionURIid).subscribe(res => this.answerByQuestion = res);
+      this.poolURIName = String(nav.get('poolURIName'));
+
+      this.questionIDForArray = this.questionURIid;
+      this.questionIDForArray = this.questionIDForArray-1; // Direkt -1 rechnen, denn QuestionID != Array-Index!
+
+      if(this.modus?.teilpruefung)
+      {
+        this.db.APIgetPoolByURIName(this.poolURIName).subscribe(pool => {
+          this.db.APIgetQuestionsByPoolId(Number(pool.id)).subscribe(qlist => this.vorpruefungQuestionList = qlist);
+        });
+
+        this.db.APIgetAnswerById(this.questionURIid).subscribe(res => this.answerByQuestion = res);
+      }
+
+      if(this.modus?.pruefungsmodus)
+      {
+        console.log("nicht implementiert");
+      }
+
+      if(this.modus?.lernmodus)
+      {
+        this.db.APIgetQuestionById(this.questionURIid).subscribe(res => this.selectedQuestion = res);
+        this.db.APIgetAnswerById(this.questionURIid).subscribe(res => this.answerByQuestion = res);
+      }
+
     });
 
 
@@ -51,11 +83,40 @@ export class QuestionComponent implements OnInit {
      return this.showhelp ? this.showhelp = false : this.showhelp = true;
   }
 
-  checkanswer(questionID: Number, answerID: any): Boolean{
-    this.db.getAnswerById(questionID).subscribe(res => {
-      if(res.answers[answerID] == '1') { this.beantWortetStatus = true; }
-      if(res.answers[answerID] == '0') { this.beantWortetStatus = false; }
-    });
-    return this.beantWortetStatus;
+  checkanswer(element: HTMLElement, answerID: any, isMultiple: Boolean, btn?: HTMLButtonElement){
+
+    this.resetQuestion(element);
+
+    this.resetButton = true
+
+    if(this.selectedQuestion) { this.selectedQuestion.q_answered = true; }
+
+    if(isMultiple)
+    {
+      if(this.answerByQuestion.answers[answerID] == '1') {
+        element.classList.add('class', 'border-success');
+        element.setAttribute('disabled', '');
+      }
+
+      if(this.answerByQuestion.answers[answerID] == '0') {
+        element.classList.add('class', 'border-danger');
+        element.setAttribute('disabled', '');
+      }
+    }
+    else
+    {
+      if(this.answerByQuestion.answers[0] == this.answerInput) { element.classList.add('class', 'border-success'); element.setAttribute('disabled', ''); }
+      if(this.answerByQuestion.answers[0] !== this.answerInput) { element.classList.add('class', 'border-danger'); element.setAttribute('disabled', ''); }
+    }
+
+    this.vorpruefungQuestionList[this.questionIDForArray].q_answered = true;
+
+    console.log(this.vorpruefungQuestionList);
+    }
+
+  resetQuestion(element: HTMLElement){
+    element.removeAttribute('disabled');
+    element.classList.remove('border-success');
+    element.classList.remove('border-danger');
   }
 }

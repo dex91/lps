@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
-import { HttpClient, HttpErrorResponse } from '@angular/common/http';
-import { Observable, throwError, map } from 'rxjs';
-import { retry, catchError } from 'rxjs/operators';
+import { HttpClient } from '@angular/common/http';
+import { Observable, map } from 'rxjs';
+import { retry } from 'rxjs/operators';
 import { Question, QuestionRAW, QuestionPool, Answer, Modus } from './dateninterfaces';
 import { formatDateninterfaces } from './format-dateninterfaces';
 
@@ -10,54 +10,47 @@ import { formatDateninterfaces } from './format-dateninterfaces';
 })
 export class DatabaseMysqlService {
 
-  apiRoot: String = "https://api.visualnetworks.eu/lps";
+  protected apiRoot: String = "https://api.visualnetworks.eu/lps";
   private modus?: Modus;
 
   constructor(
     private apiClient: HttpClient,
     ) { }
 
-  getPools(): Observable<QuestionPool[]> {
+  APIgetPools(): Observable<QuestionPool[]> {
     return this.apiClient.get<QuestionPool[]>(`${this.apiRoot}/getPools`);
   }
 
-  getPoolByURIName(uri: String): Observable<QuestionPool> {
+  APIgetPoolByURIName(uri: String): Observable<QuestionPool> {
     let requestURI = encodeURI(`${this.apiRoot}/getPoolByURIName?poolURIName=${uri}`);
     return this.apiClient.get<QuestionPool>(requestURI);
   }
 
-  getQuestionsByPoolId(id: Number): Observable<Question[]> {
+  APIgetQuestionsByPoolId(id: Number): Observable<Question[]> {
     return this.apiClient.get<QuestionRAW[]>(`${this.apiRoot}/getQuestionsByPoolId?poolId=${id}`).pipe(
       retry(3),
       map(questionRAW => questionRAW.map(question => formatDateninterfaces.formatQuestion(question))),
       );
   }
 
-  getQuestionById(id: Number): Observable<Question> {
+  APIgetQuestionById(id: Number): Observable<Question> {
     return this.apiClient.get<QuestionRAW>(`${this.apiRoot}/getQuestionById?id=${id}`).pipe(
       retry(3),
       map(question => formatDateninterfaces.formatQuestion(question)),
     );
   }
 
-  getAnswerById(id: Number): Observable<Answer> {
+  APIgetAnswerById(id: Number): Observable<Answer> {
     return this.apiClient.get<Answer>(`${this.apiRoot}/getAnswerById?id=${id}`);
   }
 
-  /**
-   * 3 Methoden damit sich Komponenten untereinander unterhalten können.
-   * Wie "Modus" aussieht steht jetzt nur dürr fest....
-   * @param modeObj Das object zum steuern von subkomponenten
-   */
-  setMode(modeObj: Modus): void {
+  // Getter sowie Setter für den Modus.
+  setMode(modeObj: Modus) {
     this.modus = modeObj;
   }
-  getMode() {
-    let temp = this.modus;
-    //this.clearMode(); // Wenn aktiviert bekommen wir in child-components undefined :(
-    return temp;
+
+  getMode(): Modus {
+    return this.modus || {mode: ''};
   }
-  clearMode(): void {
-    this.modus = undefined;
-  }
+
 }

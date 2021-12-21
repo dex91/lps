@@ -15,6 +15,7 @@ import { HttpClientModule } from '@angular/common/http';
 import { PoollistComponent } from './poollist/poollist.component';
 import { QuestionlistComponent } from './questionlist/questionlist.component';
 import { QuestionComponent } from './question/question.component';
+import { FormsModule } from '@angular/forms';
 
 registerLocaleData(localeDe);
 
@@ -35,6 +36,7 @@ registerLocaleData(localeDe);
     BrowserModule,
     AppRoutingModule,
     HttpClientModule,
+    FormsModule,
   ],
   providers: [],
   bootstrap: [AppComponent]

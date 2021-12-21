@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { Modus } from '../dateninterfaces';
 import { DatabaseMysqlService } from '../database-mysql.service';
-import { ActivatedRoute  } from '@angular/router';
+import { ActivatedRoute, Router  } from '@angular/router';
 
 @Component({
   selector: 'lps-learning',
@@ -23,14 +23,18 @@ export class LearningComponent implements OnInit {
   constructor(
     private db: DatabaseMysqlService,
     private route: ActivatedRoute,
+    private router: Router,
     ) {
     this.modus = { ...this.modus, mode: this.moduleModus, lernmodus: true };
     this.db.setMode(this.modus);
    }
 
   ngOnInit(): void {
-    this.poolURIName = String(this.route.snapshot.paramMap.get("poolURIName"));
-    this.questionURIid = Number(this.route.snapshot.paramMap.get("questionId"));
+
+    this.route.paramMap.subscribe(nav =>{
+      this.poolURIName = String(nav.get('poolURIName'));
+      this.questionURIid = Number(nav.get('questionId'));
+    });
 
     if(this.poolURIName !== 'null') { this.poolSelected = true; }
     if(this.questionURIid !== 0) { this.poolSelected = true; this.questionSelected = true; }

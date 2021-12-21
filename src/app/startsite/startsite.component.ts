@@ -7,7 +7,8 @@ import { Component, OnInit } from '@angular/core';
 })
 export class StartsiteComponent implements OnInit {
 
-  constructor() { }
+  constructor() {
+  }
 
   ngOnInit(): void {
   }

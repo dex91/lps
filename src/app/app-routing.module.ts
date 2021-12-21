@@ -7,6 +7,7 @@ import { TestYourselfComponent } from './test-yourself/test-yourself.component';
 
 const routes: Routes = [
   { path: 'start', component: StartsiteComponent },
+
   { path: 'learning', component: LearningComponent },
   { path: 'learning/:poolURIName',
     children: [
