@@ -78,30 +78,38 @@
           <div class="d-flex justify-content-center">
             <div class="p-2"><input #answerInputElement [(ngModel)]="answerInput" type="text" name="textanswer" class="form-control form-control-sm" placeholder="Deine Antwort"></div>
             <div class="p-2">
-              <button #absendeButton (click)="checkanswer(answerInputElement, vorpruefungQuestionList[questionIDForArray].id, false, absendeButton);" type="submit" class="btn btn-outline-primary btn-sm">
+              <button *ngIf="resetButton else absendeButton" (click)="resetQuestion(answerInputElement, false)" type="button" class="btn btn-outline-danger btn-sm">
+                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-arrow-counterclockwise" viewBox="0 0 16 16">
+                  <path fill-rule="evenodd" d="M8 3a5 5 0 1 1-4.546 2.914.5.5 0 0 0-.908-.417A6 6 0 1 0 8 2v1z"></path>
+                  <path d="M8 4.466V.534a.25.25 0 0 0-.41-.192L5.23 2.308a.25.25 0 0 0 0 .384l2.36 1.966A.25.25 0 0 0 8 4.466z"></path>
+                </svg>
+                Frage Zur&uuml;cksetzen
+              </button>
+              <ng-template #absendeButton>
+              <button #absendeButton (click)="checkanswer(answerInputElement, vorpruefungQuestionList[questionIDForArray].id, false);" type="submit" class="btn btn-outline-primary btn-sm">
                 <svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" fill="currentColor" class="bi bi-arrow-right-square" viewBox="0 0 16 16">
                   <path fill-rule="evenodd" d="M15 2a1 1 0 0 0-1-1H2a1 1 0 0 0-1 1v12a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1V2zM0 2a2 2 0 0 1 2-2h12a2 2 0 0 1 2 2v12a2 2 0 0 1-2 2H2a2 2 0 0 1-2-2V2zm4.5 5.5a.5.5 0 0 0 0 1h5.793l-2.147 2.146a.5.5 0 0 0 .708.708l3-3a.5.5 0 0 0 0-.708l-3-3a.5.5 0 1 0-.708.708L10.293 7.5H4.5z"/>
                 </svg>
               </button>
+            </ng-template>
             </div>
             </div>
           </ng-container>
 
         <ng-container #singleMultipleAnswers *ngIf="vorpruefungQuestionList[questionIDForArray].q_answer_type == 1 || vorpruefungQuestionList[questionIDForArray].q_answer_type == 2">
-        <ul class="list-group list-group-flush">
+        <ul #Auswahlliste class="list-group list-group-flush">
           <ng-container *ngFor="let anzeigeAntwort of vorpruefungQuestionList[questionIDForArray].q_answers; index as i">
-            <button #btnAnswer (click)="checkanswer(btnAnswer, i, true)" class="list-group-item d-flex justify-content-between align-items-center mb-2 border">{{anzeigeAntwort}}</button>
+            <button #btnAnswer (click)="checkanswer(btnAnswer, i, true, Auswahlliste)" class="list-group-item d-flex justify-content-between align-items-center mb-2 border">{{anzeigeAntwort}}</button>
           </ng-container>
+          <button *ngIf="resetButton" (click)="resetQuestion(Auswahlliste, true)" type="button" class="btn btn-outline-danger btn-sm">
+            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-arrow-counterclockwise" viewBox="0 0 16 16">
+              <path fill-rule="evenodd" d="M8 3a5 5 0 1 1-4.546 2.914.5.5 0 0 0-.908-.417A6 6 0 1 0 8 2v1z"></path>
+              <path d="M8 4.466V.534a.25.25 0 0 0-.41-.192L5.23 2.308a.25.25 0 0 0 0 .384l2.36 1.966A.25.25 0 0 0 8 4.466z"></path>
+            </svg>
+            Frage Zur&uuml;cksetzen
+          </button>
         </ul>
       </ng-container>
-
-      <button *ngIf="resetButton" type="button" class="btn btn-outline-danger btn-sm">
-        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-arrow-counterclockwise" viewBox="0 0 16 16">
-          <path fill-rule="evenodd" d="M8 3a5 5 0 1 1-4.546 2.914.5.5 0 0 0-.908-.417A6 6 0 1 0 8 2v1z"></path>
-          <path d="M8 4.466V.534a.25.25 0 0 0-.41-.192L5.23 2.308a.25.25 0 0 0 0 .384l2.36 1.966A.25.25 0 0 0 8 4.466z"></path>
-        </svg>
-        Frage Zur&uuml;cksetzen
-      </button>
 
       </div>
     </div>

@@ -40,6 +40,7 @@ export class QuestionComponent implements OnInit {
     this.router.events.subscribe((event: Event) => {
       if (event instanceof NavigationStart) {
           this.showhelp = false;
+          this.resetButton = false;
       }
   });
 
@@ -83,40 +84,51 @@ export class QuestionComponent implements OnInit {
      return this.showhelp ? this.showhelp = false : this.showhelp = true;
   }
 
-  checkanswer(element: HTMLElement, answerID: any, isMultiple: Boolean, btn?: HTMLButtonElement){
-
-    this.resetQuestion(element);
-
-    this.resetButton = true
+  checkanswer(button: HTMLElement, answerID: any, isMultiple: Boolean, liste?: HTMLElement){
 
     if(this.selectedQuestion) { this.selectedQuestion.q_answered = true; }
 
-    if(isMultiple)
+    if(isMultiple && liste)
     {
       if(this.answerByQuestion.answers[answerID] == '1') {
-        element.classList.add('class', 'border-success');
-        element.setAttribute('disabled', '');
+        button.classList.add('class', 'border-success');
+        button.setAttribute('disabled', '');
       }
 
       if(this.answerByQuestion.answers[answerID] == '0') {
-        element.classList.add('class', 'border-danger');
-        element.setAttribute('disabled', '');
+        button.classList.add('class', 'border-danger');
+        for (let i = 0; i < liste.children.length; i++) {
+          liste.children[i].setAttribute('disabled', '');
+        }
+        this.resetButton = true;
       }
     }
     else
     {
-      if(this.answerByQuestion.answers[0] == this.answerInput) { element.classList.add('class', 'border-success'); element.setAttribute('disabled', ''); }
-      if(this.answerByQuestion.answers[0] !== this.answerInput) { element.classList.add('class', 'border-danger'); element.setAttribute('disabled', ''); }
+      if(this.answerByQuestion.answers[0] == this.answerInput) { this.resetButton = true; button.classList.add('class', 'border-success'); button.setAttribute('disabled', ''); }
+      if(this.answerByQuestion.answers[0] !== this.answerInput) { this.resetButton = true; button.classList.add('class', 'border-danger'); button.setAttribute('disabled', ''); }
     }
 
     this.vorpruefungQuestionList[this.questionIDForArray].q_answered = true;
-
-    console.log(this.vorpruefungQuestionList);
     }
 
-  resetQuestion(element: HTMLElement){
-    element.removeAttribute('disabled');
-    element.classList.remove('border-success');
-    element.classList.remove('border-danger');
+  resetQuestion(element: HTMLElement, isMultiple: Boolean){
+
+    if(isMultiple)
+    {
+      for (let i = 0; i < element.children.length; i++) {
+        element.children[i].removeAttribute('disabled');
+        element.children[i].classList.remove('border-success');
+        element.children[i].classList.remove('border-danger');
+      }
+    }
+    else
+    {
+      element.removeAttribute('disabled');
+      element.classList.remove('border-success');
+      element.classList.remove('border-danger');
+      this.answerInput = "";
+    }
+    this.resetButton = false;
   }
 }
