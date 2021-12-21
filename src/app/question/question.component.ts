@@ -58,7 +58,9 @@ export class QuestionComponent implements OnInit {
       if(this.modus?.teilpruefung)
       {
         this.db.APIgetPoolByURIName(this.poolURIName).subscribe(pool => {
-          this.db.APIgetQuestionsByPoolId(Number(pool.id)).subscribe(qlist => this.vorpruefungQuestionList = qlist);
+          this.db.APIgetQuestionsByPoolId(Number(pool.id)).subscribe(qlist => {
+            this.vorpruefungQuestionList.length == 0 ?  this.vorpruefungQuestionList = qlist : false;
+          });
         });
 
         this.db.APIgetAnswerById(this.questionURIid).subscribe(res => this.answerByQuestion = res);
@@ -76,8 +78,6 @@ export class QuestionComponent implements OnInit {
       }
 
     });
-
-
   }
 
   toggleHelp() {
@@ -85,8 +85,6 @@ export class QuestionComponent implements OnInit {
   }
 
   checkanswer(button: HTMLElement, answerID: any, isMultiple: Boolean, liste?: HTMLElement){
-
-    if(this.selectedQuestion) { this.selectedQuestion.q_answered = true; }
 
     if(isMultiple && liste)
     {
