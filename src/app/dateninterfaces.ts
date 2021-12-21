@@ -34,6 +34,7 @@ export interface QuestionPool{
   id?: Number,
   poolURIName?: String,
   poolName?: String,
+  poolSize?: Number,
 }
 
 export interface Modus{
