@@ -23,6 +23,7 @@ export class QuestionComponent implements OnInit {
   showhelp: Boolean = false;
   answerInput: String = "";
   resetButton: Boolean = false;
+  answersByUser: Answer[] = [];
 
   //Variablen für den Teilprüfungsmodus
   vorpruefungQuestionList: Question[] = []; // Hier mit ARRAY da wir daten zwischenspeichern müssen.
@@ -37,6 +38,7 @@ export class QuestionComponent implements OnInit {
 
     // Beim wechseln einer Frage sollen bestimmte Aktionen ausgeführt werden.
     // z.b Das der Hilfetext ausgeblendet wird.
+    // z.b Das der Resetbutton verschwindet (da das laden der Frage anders von statten gehen soll)
     this.router.events.subscribe((event: Event) => {
       if (event instanceof NavigationStart) {
           this.showhelp = false;
@@ -58,12 +60,32 @@ export class QuestionComponent implements OnInit {
       if(this.modus?.teilpruefung)
       {
         this.db.APIgetPoolByURIName(this.poolURIName).subscribe(pool => {
+
           this.db.APIgetQuestionsByPoolId(Number(pool.id)).subscribe(qlist => {
-            this.vorpruefungQuestionList.length == 0 ?  this.vorpruefungQuestionList = qlist : false;
+
+            if(this.vorpruefungQuestionList.length == 0) {
+              this.vorpruefungQuestionList = qlist;
+            // Kopie der Antwort anlegen in dem Antworten von user Array
+            // Zeitgleich ALLE Antworten auf 2 setzen für "nicht beantwortet/nicht ausgewählt"
+            this.vorpruefungQuestionList.forEach((element, i) => {
+
+              this.db.APIgetAnswerById(qlist[i].id).subscribe(res => {
+
+                res.answers.forEach((element, index, newarray) => {
+                  element = '2';
+                  newarray[index] = element;
+                });
+
+                this.answersByUser.push(res);
+              });
+            });
+            console.log(this.answersByUser);
+          }
+
           });
+
         });
 
-        this.db.APIgetAnswerById(this.questionURIid).subscribe(res => this.answerByQuestion = res);
       }
 
       if(this.modus?.pruefungsmodus)
@@ -75,7 +97,6 @@ export class QuestionComponent implements OnInit {
       {
         this.db.APIgetQuestionById(this.questionURIid).subscribe(res => this.selectedQuestion = res);
         this.db.APIgetAnswerById(this.questionURIid).subscribe(res => this.answerByQuestion = res);
-        console.log(this.selectedQuestion);
       }
 
     });
