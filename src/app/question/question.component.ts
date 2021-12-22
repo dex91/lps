@@ -75,6 +75,7 @@ export class QuestionComponent implements OnInit {
       {
         this.db.APIgetQuestionById(this.questionURIid).subscribe(res => this.selectedQuestion = res);
         this.db.APIgetAnswerById(this.questionURIid).subscribe(res => this.answerByQuestion = res);
+        console.log(this.selectedQuestion);
       }
 
     });
