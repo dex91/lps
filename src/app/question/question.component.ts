@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { Question, Answer, Modus } from '../dateninterfaces';
 import { DatabaseMysqlService } from '../database-mysql.service';
 import { ActivatedRoute, NavigationStart, Router, Event } from '@angular/router';
+import { newArray } from '@angular/compiler/src/util';
 
 @Component({
   selector: 'lps-question',
@@ -24,6 +25,7 @@ export class QuestionComponent implements OnInit {
   answerInput: String = "";
   resetButton: Boolean = false;
   answersByUser: Answer[] = [];
+  answersByQuestion: Answer[] = [];
 
   //Variablen für den Teilprüfungsmodus
   vorpruefungQuestionList: Question[] = []; // Hier mit ARRAY da wir daten zwischenspeichern müssen.
@@ -59,33 +61,12 @@ export class QuestionComponent implements OnInit {
 
       if(this.modus?.teilpruefung)
       {
-        this.db.APIgetPoolByURIName(this.poolURIName).subscribe(pool => {
-
-          this.db.APIgetQuestionsByPoolId(Number(pool.id)).subscribe(qlist => {
-
-            if(this.vorpruefungQuestionList.length == 0) {
-              this.vorpruefungQuestionList = qlist;
-            // Kopie der Antwort anlegen in dem Antworten von user Array
-            // Zeitgleich ALLE Antworten auf 2 setzen für "nicht beantwortet/nicht ausgewählt"
-            this.vorpruefungQuestionList.forEach((element, i) => {
-
-              this.db.APIgetAnswerById(qlist[i].id).subscribe(res => {
-
-                res.answers.forEach((element, index, newarray) => {
-                  element = '2';
-                  newarray[index] = element;
-                });
-
-                this.answersByUser.push(res);
-              });
-            });
-            console.log(this.answersByUser);
-          }
-
+        if(this.vorpruefungQuestionList.length == 0) {
+          this.db.APIgetPoolByURIName(this.poolURIName).subscribe(pool => {
+            this.db.APIgetQuestionsByPoolId(Number(pool.id)).subscribe(qlist => this.vorpruefungQuestionList = qlist);
           });
-
-        });
-
+        }
+        this.db.APIgetAnswerById(this.questionURIid).subscribe(answer => this.answerByQuestion = answer);
       }
 
       if(this.modus?.pruefungsmodus)
@@ -110,15 +91,43 @@ export class QuestionComponent implements OnInit {
 
     if(isMultiple && liste)
     {
+
+      //Countervariablen
+      let counterofRightAnswers = 0;
+      let counterofGivenRightAnswers = 0;
+
+      // Über die ANTWORTEN itterieren und zählen wie viele Antworten RICHTIG sind.
+      this.answerByQuestion.answers.forEach(answer => {
+        answer == '1' ? counterofRightAnswers++ : false
+      });
+
       if(this.answerByQuestion.answers[answerID] == '1') {
         button.classList.add('class', 'border-success');
-        button.setAttribute('disabled', '');
+        button.setAttribute('disabled', 'true');
+      }
+
+      // Über das HTML Element iterrieren um herauszufinden welche buttons schon geklickt wurden.
+      // Anhand des attributes "disabled"
+      for(let i = 0; i < liste.children.length; i++)
+      {
+        if(liste.children[i].hasAttribute('disabled')){
+          counterofGivenRightAnswers++
+        }
+      }
+
+      // Wenn die countervariablen übereinstimmen, wird die frage gesperrt.
+      if(counterofGivenRightAnswers === counterofRightAnswers)
+      {
+        for (let i = 0; i < liste.children.length; i++) {
+          liste.children[i].setAttribute('disabled', 'true');
+        }
+        this.resetButton = true;
       }
 
       if(this.answerByQuestion.answers[answerID] == '0') {
         button.classList.add('class', 'border-danger');
         for (let i = 0; i < liste.children.length; i++) {
-          liste.children[i].setAttribute('disabled', '');
+          liste.children[i].setAttribute('disabled', 'true');
         }
         this.resetButton = true;
       }

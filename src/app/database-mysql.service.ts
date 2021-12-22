@@ -4,10 +4,10 @@ import { Observable, map } from 'rxjs';
 import { retry } from 'rxjs/operators';
 import { Question, QuestionRAW, QuestionPool, Answer, Modus } from './dateninterfaces';
 import { formatDateninterfaces } from './format-dateninterfaces';
-
 @Injectable({
   providedIn: 'root'
 })
+
 export class DatabaseMysqlService {
 
   protected apiRoot: String = "https://api.visualnetworks.eu/lps";

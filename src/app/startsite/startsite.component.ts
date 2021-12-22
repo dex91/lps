@@ -11,6 +11,7 @@ export class StartsiteComponent implements OnInit {
   }
 
   ngOnInit(): void {
+
   }
 
 }

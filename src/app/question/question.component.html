@@ -8,7 +8,6 @@
         <span *ngIf="selectedQuestion.q_points > 1" class="badge bg-primary rounded-pill float-right">{{selectedQuestion.q_points}} Punkte</span>
         <br /><br />
         <h6 class="card-title" style="white-space:pre-wrap;">{{selectedQuestion.q_title}}</h6>
-        <p *ngIf="selectedQuestion.q_helptext" class="font-italic text-justify"><i class="bi bi-lightbulb"></i> Kleiner Tipp: {{selectedQuestion.q_helptext}}</p>
 
         <ng-container *ngIf="selectedQuestion.q_answer_type == 3">
           <br />
@@ -19,7 +18,7 @@
           </ng-container>
 
         <ng-container #singleMultipleAnswers *ngIf="selectedQuestion.q_answer_type == 1 || selectedQuestion.q_answer_type == 2 && answerByQuestion.answers.length > 1">
-          <p *ngIf="selectedQuestion.q_answer_type == 2" class="font-italic text-justify"><i class="bi bi-mortarboard"> Bei dieser Frage k&ouml;nnen mehrere Antworten richtig sein.</i></p>
+          <p *ngIf="selectedQuestion.q_answer_type == 2" class="font-italic text-justify"><i class="bi bi-mortarboard"> Hier sind mehrere Antworten richtig.</i></p>
         <ul class="list-group list-group-flush">
           <ng-container *ngFor="let anzeigeAntwort of selectedQuestion.q_answers; index as i">
             <li *ngIf="answerByQuestion.answers[i] == '1'" class="list-group-item d-flex justify-content-between align-items-center mb-2 border border-success">{{anzeigeAntwort}}</li>
@@ -47,7 +46,7 @@
         <span *ngIf="vorpruefungQuestionList[questionIDForArray].q_points < 2" class="badge bg-primary rounded-pill float-right">{{vorpruefungQuestionList[questionIDForArray].q_points}} Punkt</span>
         <span *ngIf="vorpruefungQuestionList[questionIDForArray].q_points > 1" class="badge bg-primary rounded-pill float-right">{{vorpruefungQuestionList[questionIDForArray].q_points}} Punkte</span>
         <br /><br />
-        <p *ngIf="vorpruefungQuestionList[questionIDForArray].q_answer_type == 2" class="font-italic text-justify"><i class="bi bi-mortarboard"> Bei dieser Frage k&ouml;nnen mehrere Antworten richtig sein.</i></p>
+        <p *ngIf="vorpruefungQuestionList[questionIDForArray].q_answer_type !== 3" class="font-italic text-justify"><i class="bi bi-mortarboard"> Mehrfachantwort m&ouml;glich!</i></p>
 
         <ng-container *ngIf="vorpruefungQuestionList[questionIDForArray].q_helptext && !showhelp">
           <p class="text-justify align-items-center" style="float: right;">
