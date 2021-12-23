@@ -67,24 +67,31 @@ export class QuestionComponent implements OnInit {
         }
         this.db.APIgetAnswerById(this.questionURIid).subscribe(answer => this.answerByQuestion = answer);
 
-        // Fragen laden (vorher formular entsperren)
+        // Fragen mit vom user ausgewählten antworten bestücken
+        // Dies geschiet nur, wenn eine Frage beantwortet wurde,
+        // sonst wird nur das formular entsperrt.
+        // MUSS mit timeout gemacht werden... Daten benötigen etwas zeit...
         setTimeout(() => {
-          this.answerByQuestion.answers.forEach((element, z) => document.getElementById(`answerButton_${z}`)?.classList.remove('disabled'));
-          this.answersByUser.forEach((element, i) =>
+
+          if(this.vorpruefungQuestionList[this.questionIDForArray].q_answered = true)
           {
-            if(this.answerByQuestion.id == this.answersByUser[i].id)
+            this.answersByUser.forEach((element, i) =>
             {
-              this.resetButton = true;
-              this.answersByUser[i].answers.forEach((element, y) =>
+              if(this.answerByQuestion.id == this.answersByUser[i].id)
               {
-                let btntoChange = document.getElementById(`answerButton_${y}`);
-                if(this.answersByUser[i].answers[y] == '1')
+                this.resetButton = true;
+                this.answersByUser[i].answers.forEach((element, y) =>
                 {
-                  btntoChange?.classList.add('border-warning');
-                }
-              });
-            }
-          });
+                  let btntoChange = document.getElementById(`answerButton_${y}`);
+                  if(this.answersByUser[i].answers[y] == '1')
+                  {
+                    btntoChange?.classList.add('border-warning');
+                  }
+                });
+              }
+            });
+          }
+          this.answerByQuestion.answers.forEach((element, z) => document.getElementById(`answerButton_${z}`)?.classList.remove('disabled'));
         },150);
 
       }
@@ -156,7 +163,7 @@ export class QuestionComponent implements OnInit {
 
       // Prüfen ob überhaupt schon eine Antwort in unserem Array ist
       // Wenn ja, dann durchlaufen wir erstmal jedes element und suchen im Object des elements
-      // Ob die Frage schon einmal beantwortet wurde, wenn ja tauschen wir die objekte aus,
+      // ob die Frage schon einmal beantwortet wurde, wenn ja tauschen wir das object gegen unser neu generiertes aus,
       // wenn nicht fügen wir einfach die antwort als neuen wert hinzu.
       if(this.answersByUser.length == 0)
       {
