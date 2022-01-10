@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { Question, Answer, Modus } from '../dateninterfaces';
 import { DatabaseMysqlService } from '../database-mysql.service';
-import { ActivatedRoute, NavigationStart, Router, Event, NavigationEnd } from '@angular/router';
+import { ActivatedRoute, NavigationStart, Router, Event } from '@angular/router';
 
 @Component({
   selector: 'lps-question',
@@ -72,26 +72,52 @@ export class QuestionComponent implements OnInit {
         // sonst wird nur das formular entsperrt.
         // MUSS mit timeout gemacht werden... Daten benötigen etwas zeit...
         setTimeout(() => {
-
-          if(this.vorpruefungQuestionList[this.questionIDForArray].q_answered = true)
+          if(this.vorpruefungQuestionList[this.questionIDForArray].q_answered == true)
           {
-            this.answersByUser.forEach((element, i) =>
+            this.answersByUser.forEach((el, i) =>
             {
               if(this.answerByQuestion.id == this.answersByUser[i].id)
               {
-                this.resetButton = true;
-                this.answersByUser[i].answers.forEach((element, y) =>
+
+                if(this.vorpruefungQuestionList[this.questionIDForArray].q_answer_type === 3)
                 {
-                  let btntoChange = document.getElementById(`answerButton_${y}`);
-                  if(this.answersByUser[i].answers[y] == '1')
+                  this.checkAnswer(this.vorpruefungQuestionList[this.questionIDForArray].id, this.answersByUser[i].answers[0], true);
+                  this.answerInput = this.answersByUser[i].answers[0];
+                }
+                else {
+                  this.answersByUser[i].answers.forEach((el, y) =>
                   {
-                    btntoChange?.classList.add('border-warning');
-                  }
-                });
+                    if(this.answersByUser[i].answers[y] == '1')
+                    {
+                      this.checkAnswer(y, this.answersByUser[i].answers[y], false);
+                    }
+
+                  });
+                }
               }
             });
           }
-          this.answerByQuestion.answers.forEach((element, z) => document.getElementById(`answerButton_${z}`)?.classList.remove('disabled'));
+          else {
+            if(this.vorpruefungQuestionList[this.questionIDForArray].q_answer_type === 3)
+            {
+              let ele = document.getElementById(`answerButton_${this.vorpruefungQuestionList[this.questionIDForArray].id}`)
+              this.answerInput = "";
+              ele?.removeAttribute('disabled');
+              ele?.classList.remove('border-success');
+              ele?.classList.remove('border-danger');
+              ele?.classList.remove('border-warning');
+            }
+            else {
+
+              this.answerByQuestion.answers.forEach((el, z) =>
+              {
+              let ele = document.getElementById(`answerButton_${z}`);
+              ele?.removeAttribute('disabled');
+              ele?.classList.remove('border-success');
+              ele?.classList.remove('border-danger');
+              ele?.classList.remove('border-warning'); });
+            }
+          }
         },150);
 
       }
@@ -112,51 +138,80 @@ export class QuestionComponent implements OnInit {
 
   }
 
-  returnAnswer(){
-
-  }
 
   toggleHelp() {
      return this.showhelp ? this.showhelp = false : this.showhelp = true;
   }
 
-  checkanswer(button: HTMLElement, answerID: any, isMultiple: Boolean, modus: String, liste?: HTMLElement){
+  selectAnswer(button: HTMLElement, answerID: any, modus: String, liste?: HTMLElement){
 
-    // Variablen für Antwortobjekt
-    let buttonAnswerArray: Array<String> = [];
-    let answerTempObj: Answer;
-
-    // Prüfvariablen
-    let doCheck: Boolean = true;
-      // Zählervariablen als Prüfvariablen
+    // Zählervariablen als Prüfvariablen
     let counterofRightAnswers = 0;
     let counterofGivenRightAnswers = 0;
-
-    if(isMultiple && liste)
-    {
 
       // Prüfen ob ausgewählte Antwort schon einmal selektiert wurde
       // Wenn ja, dann heißt dies, Antwort DE-Selektieren
       if(button.classList.contains('border-warning')) {
         button.classList.remove('border-warning');
-        doCheck = false;
       } else {
         button.classList.add('border-warning');
-        doCheck = true;
       }
 
+      this.createAnswerbyUserObject(liste);
+
+      // Über die ANTWORTEN itterieren und zählen wie viele Antworten RICHTIG sind.
+      this.answerByQuestion.answers.forEach(answer => {
+        answer == '1' ? counterofRightAnswers++ : false
+      });
+
+      if(liste)
+      {
+        this.checkAnswer(answerID, '1', false);
+
+        // Über das HTML Element iterrieren um herauszufinden welche buttons schon geklickt wurden.
+        // Anhand des attributes "disabled"
+        for(let i = 0; i < liste.children.length; i++)
+        {
+          if(liste.children[i].hasAttribute('disabled')){
+            counterofGivenRightAnswers++
+          }
+        }
+
+        // Wenn die countervariablen übereinstimmen, wird die frage gesperrt.
+        if(counterofGivenRightAnswers === counterofRightAnswers)
+        {
+          for (let i = 0; i < liste.children.length; i++) {
+            liste.children[i].setAttribute('disabled', '');
+          }
+        }
+      } else { this.checkAnswer(answerID, this.answerInput, true); }
+    }
+
+  createAnswerbyUserObject(liste?: HTMLElement) {
+
+    // Variablen für Antwortobjekt
+    let buttonAnswerArray: Array<String> = [];
+    let answerTempObj: Answer;
+
+    if(liste)
+    {
       // Für unser "Selbstgebautes" Antwortenobject benötigen wir
       // die ausgewählten antworten vom user. Dafür ist die klasse
-      // border-warning (gelbe umrandung) wichtig.
+      // border-warning (gelbe umrandung) wichtig. Natürlich auch alle anderen beiden, weil wegen mehrfach verwenden.
       for(let i = 0; i < liste.children.length; i++)
       {
-        if(liste.children[i].classList.contains('border-warning')){
+        if(liste.children[i].classList.contains('border-warning') || liste.children[i].classList.contains('border-success') || liste.children[i].classList.contains('border-danger')){
           buttonAnswerArray.push('1');
         }
         else {
           buttonAnswerArray.push('0');
         }
       }
+    }
+    else
+    {
+      buttonAnswerArray.push(this.answerInput);
+    }
 
       // Das Antwortenobject zusammenfrickeln...
       answerTempObj = {id: this.answerByQuestion.id, answers: buttonAnswerArray}
@@ -171,70 +226,38 @@ export class QuestionComponent implements OnInit {
       } else {
 
         let found: Boolean = false;
-        for(let i = 0; i < this.answersByUser.length; i++)
-        {
+        this.answersByUser.forEach((el, i) => {
           if(this.answersByUser[i].id == this.answerByQuestion.id)
           {
             this.answersByUser.splice(i, 1, answerTempObj);
             found = true;
           }
-        }
-
+        });
         !found ? this.answersByUser.push(answerTempObj) : false;
 
       }
       this.vorpruefungQuestionList[this.questionIDForArray].q_answered = true;
+  }
 
-      //
-    }//REMOVE BY ENABLING ALL OTHER FUNCTIONS!!!!
+  checkAnswer(index: any, answer: String, isText: Boolean)
+  {
+    let btntoChange = document.getElementById(`answerButton_${index}`);
 
-    //   // Über die ANTWORTEN itterieren und zählen wie viele Antworten RICHTIG sind.
-    //   this.answerByQuestion.answers.forEach(answer => {
-    //     answer == '1' ? counterofRightAnswers++ : false
-    //   });
+    if(isText) { index = 0; }
 
-    //   if(this.answerByQuestion.answers[answerID] == '1') {
-    //     button.classList.add('class', 'border-success');
-    //     button.setAttribute('disabled', 'true');
-    //     button.setAttribute('selected', 'true');
-    //   }
-
-    //   console.log(this.answersByUser);
-
-    //   // Über das HTML Element iterrieren um herauszufinden welche buttons schon geklickt wurden.
-    //   // Anhand des attributes "disabled"
-    //   for(let i = 0; i < liste.children.length; i++)
-    //   {
-    //     if(liste.children[i].hasAttribute('disabled')){
-    //       counterofGivenRightAnswers++
-    //     }
-    //   }
-
-    //   // Wenn die countervariablen übereinstimmen, wird die frage gesperrt.
-    //   if(counterofGivenRightAnswers === counterofRightAnswers)
-    //   {
-    //     for (let i = 0; i < liste.children.length; i++) {
-    //       liste.children[i].setAttribute('disabled', 'true');
-    //     }
-    //     this.resetButton = true;
-    //   }
-
-    //   if(this.answerByQuestion.answers[answerID] == '0') {
-    //     button.classList.add('class', 'border-danger');
-    //     for (let i = 0; i < liste.children.length; i++) {
-    //       liste.children[i].setAttribute('disabled', 'true');
-    //     }
-    //     this.resetButton = true;
-    //   }
-    // }
-    // else
-    // {
-    //   if(this.answerByQuestion.answers[0] == this.answerInput) { this.resetButton = true; button.classList.add('class', 'border-success'); button.setAttribute('disabled', ''); }
-    //   if(this.answerByQuestion.answers[0] !== this.answerInput) { this.resetButton = true; button.classList.add('class', 'border-danger'); button.setAttribute('disabled', ''); }
-    // }
-
-    // this.vorpruefungQuestionList[this.questionIDForArray].q_answered = true;
+    if(this.answerByQuestion.answers[index] === answer) {
+      btntoChange?.classList.remove('border-warning');
+      btntoChange?.classList.add('border-success');
+      btntoChange?.setAttribute('disabled', '');
     }
+    else {
+      btntoChange?.classList.remove('border-warning');
+      btntoChange?.classList.add('border-danger');
+      btntoChange?.setAttribute('disabled', '');
+    }
+
+    this.resetButton = true;
+  }
 
   resetQuestion(element: HTMLElement, isMultiple: Boolean){
 
@@ -245,6 +268,14 @@ export class QuestionComponent implements OnInit {
         element.children[i].classList.remove('border-success');
         element.children[i].classList.remove('border-danger');
       }
+
+      this.answersByUser.forEach((el, i) => {
+        if(this.answersByUser[i].id == this.answerByQuestion.id)
+        {
+          this.answersByUser.splice(i, 1);
+        }
+      });
+
     }
     else
     {
@@ -254,5 +285,6 @@ export class QuestionComponent implements OnInit {
       this.answerInput = "";
     }
     this.resetButton = false;
+    this.vorpruefungQuestionList[this.questionIDForArray].q_answered = false;
   }
 }
