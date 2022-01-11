@@ -44,6 +44,13 @@ export class DatabaseMysqlService {
     return this.apiClient.get<Answer>(`${this.apiRoot}/getAnswerById?id=${id}`);
   }
 
+  APIgetPruefungsQuestionsByPoolId(id: Number, questionSize: Number): Observable<Question[]> {
+    return this.apiClient.get<QuestionRAW[]>(`${this.apiRoot}/getPruefungsQuestionsByPoolId.php?poolId=${id}&questionSize=${questionSize}`).pipe(
+    retry(3),
+    map(questionRAW => questionRAW.map(question => formatDateninterfaces.formatQuestion(question))),
+    );
+  }
+
   // Getter sowie Setter für den Modus.
   setMode(modeObj: Modus) {
     this.modus = modeObj;
