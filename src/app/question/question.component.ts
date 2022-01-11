@@ -159,7 +159,7 @@ export class QuestionComponent implements OnInit {
 
       this.createAnswerbyUserObject(liste);
 
-      // Über die ANTWORTEN itterieren und zählen wie viele Antworten RICHTIG sind.
+      // Über die ANTWORTEN itterieren und zählen wie viele Antworten einer Frage RICHTIG sind.
       this.answerByQuestion.answers.forEach(answer => {
         answer == '1' ? counterofRightAnswers++ : false
       });
