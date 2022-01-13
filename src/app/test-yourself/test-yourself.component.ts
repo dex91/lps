@@ -26,10 +26,8 @@ export class TestYourselfComponent implements OnInit {
     private route: ActivatedRoute,
   ) {
 
-    this.modus = { ...this.modus, mode: this.moduleModus, teilpruefung: true };
+    this.modus = { ...this.modus, mode: this.moduleModus, lernmodus: false, teilpruefung: true, pruefungsmodus: false };
     this.db.setMode(this.modus);
-
-
   }
 
   ngOnInit(): void {

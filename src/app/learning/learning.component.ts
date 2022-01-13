@@ -25,7 +25,7 @@ export class LearningComponent implements OnInit {
     private route: ActivatedRoute,
     private router: Router,
     ) {
-    this.modus = { ...this.modus, mode: this.moduleModus, lernmodus: true };
+      this.modus = { ...this.modus, mode: this.moduleModus, lernmodus: true, teilpruefung: false, pruefungsmodus: false };
     this.db.setMode(this.modus);
    }
 
