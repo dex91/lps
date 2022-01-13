@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable, map } from 'rxjs';
 import { retry } from 'rxjs/operators';
-import { Question, QuestionRAW, QuestionPool, Answer, Modus } from './dateninterfaces';
+import { Question, QuestionRAW, QuestionPool, Answer, Modus, examValue } from './dateninterfaces';
 import { formatDateninterfaces } from './format-dateninterfaces';
 @Injectable({
   providedIn: 'root'
@@ -12,6 +12,7 @@ export class DatabaseMysqlService {
 
   protected apiRoot: String = "https://api.visualnetworks.eu/lps";
   private modus?: Modus;
+  private exam?: examValue;
 
   constructor(
     private apiClient: HttpClient,
@@ -58,6 +59,15 @@ export class DatabaseMysqlService {
 
   getMode(): Modus {
     return this.modus || {mode: ''};
+  }
+
+  // Getter sowie Setter für die Prüfungssimulation.
+  setExamValue(modeObj: examValue) {
+    this.exam = modeObj;
+  }
+
+  getExamValue(): examValue {
+    return this.exam || {};
   }
 
 }
