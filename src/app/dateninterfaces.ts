@@ -43,3 +43,13 @@ export interface Modus{
   teilpruefung?: Boolean,
   lernmodus?: Boolean,
 }
+
+export interface examValue {
+  examStarted?: Boolean,
+  examFailed?: Boolean,
+  examRightQuestion?: Number,
+  examFailedQuestion?: Number,
+  examProgress?: Number,
+  examTimer?: any,
+  examReasons?: String,
+}
