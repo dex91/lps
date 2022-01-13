@@ -21,6 +21,16 @@
   animation: blinker 3s linear infinite;
 }
 
+.ten-seconds-warning {
+  color: #ff0000;
+  animation: blinker 1s linear infinite;
+}
+
+.five-seconds-warning {
+  color: #ff0000;
+  animation: blinker 0.3s linear infinite;
+}
+
 @keyframes blinker {
   50% {
     opacity: 0.25;
