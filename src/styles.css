@@ -31,6 +31,14 @@
   animation: blinker 0.3s linear infinite;
 }
 
+.just-red {
+  color: #ff0000;
+}
+
+.just-green {
+  color: #008000;
+}
+
 @keyframes blinker {
   50% {
     opacity: 0.25;
