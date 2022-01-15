@@ -1,35 +1,62 @@
-<div class="pricing-header p-3 pb-md-4 mx-auto text-center">
+<div *ngIf="!this.exam?.examStarted && !poolSelected" class="pricing-header p-3 pb-md-4 mx-auto text-center">
   <h1 class="display-4 fw-normal">Pr&uuml;fungssimulation</h1>
-  <p class="fs-5 text-muted">Hier ist Ihr k&ouml;nnen gefragt!.</p>
+  <p class="fs-5 text-muted">Hier ist Ihr k&ouml;nnen gefragt!</p>
 </div>
 
-<!-- <lps-poollist *ngIf="!poolSelected"></lps-poollist>
-
-<div class="row row-cols-2 row-cols-md-2 mb-0">
-<lps-questionlist *ngIf="poolSelected"></lps-questionlist>
-
-<div *ngIf="!questionSelected && poolSelected" class="col-mb-8">
-  <div class="card d-flex justify-content-center text-center h-100">
-    <span class="text-primary">Bitte wähle eine Frage aus</span>
+<div *ngIf="!exam?.warning && !poolSelected" class="row row-cols-1 row-cols-md-1 mb-3 text-center">
+  <div class="col-md-12">
+    <span class="text-primary h3">Wichtige information!</span>
+    <ul class="list-group mt-3 mb-3">
+      <li class="list-group-item">Sie haben 5 Minuten Zeit f&uuml;r 24 Fragen.</li>
+      <li class="list-group-item">Bei 8 Falschen Antworten oder nach ablauf der Zeit wird die Pr&uuml;fungssimulation
+        abgebrochen.</li>
+      <li class="list-group-item">Es gibt <strong>keine</strong> Teilpunkte!</li>
+      <li class="list-group-item">Hilfestellungen sind deaktiviert.</li>
+      <li class="list-group-item">Die Pr&uuml;fung kann jederzeit abgebrochen werden.</li>
+      <li class="list-group-item">Jede Frage <strong>muss</strong> &quot;abgegeben&quot; werden.</li>
+      <li class="list-group-item">&quot;Abgegebene&quot; Fragen k&ouml;nnen <i>nicht</i> mehr bearbeitet werden.</li>
+      <li class="list-group-item">Wenn alle Fragen bearbeitet wurden <strong>m&uuml;ssen</strong> Sie selbst die Pr&uuml;fung noch abgeben.</li>
+    </ul>
+    <button type="button" (click)="warningAccepted();" class="btn btn-outline-primary">
+      Weiter: Fragenkatalog ausw&auml;hlen
+      <svg xmlns="http://www.w3.org/2000/svg" width="35" height="35" fill="currentColor" class="bi bi-play"
+        viewBox="0 0 17 17">
+        <path
+          d="M10.804 8 5 4.633v6.734L10.804 8zm.792-.696a.802.802 0 0 1 0 1.392l-6.363 3.692C4.713 12.69 4 12.345 4 11.692V4.308c0-.653.713-.998 1.233-.696l6.363 3.692z">
+        </path>
+      </svg>
+    </button>
   </div>
 </div>
 
-<lps-question *ngIf="questionSelected"></lps-question>
-</div> -->
+<lps-poollist *ngIf="exam?.warning && !poolSelected"></lps-poollist>
+
+<div *ngIf="poolSelected && exam?.warning && !exam?.examFailed && !exam?.examDone" class="row row-cols-1 row-cols-md-1 mb-3">
+  <lps-question></lps-question>
+</div>
+
+<ng-container *ngIf="exam?.examFailed || exam?.examDone">
   <div class="row row-cols-1 row-cols-md-1 mb-3 text-center">
     <div class="col-md-12">
-          <span class="text-primary h3">Wichtige information!</span>
-          <ul class="list-group mt-3 mb-3">
-            <li class="list-group-item">Sie haben 30 Minuten zeit f&uuml;r 30 Fragen.</li>
-            <li class="list-group-item">Bei 8 Falschen Antworten wird die Pr&uuml;fungssimulation abgebrochen.</li>
-            <li class="list-group-item">Es gibt <strong>keine</strong> Teilpunkte!</li>
-            <li class="list-group-item">Hilfestellungen sind deaktiviert.</li>
-          </ul>
-          <button type="button" class="btn btn-outline-success blink_me btn-lg">
-            Start
-            <svg xmlns="http://www.w3.org/2000/svg" width="35" height="35" fill="currentColor" class="bi bi-play" viewBox="0 0 16 16">
-              <path d="M10.804 8 5 4.633v6.734L10.804 8zm.792-.696a.802.802 0 0 1 0 1.392l-6.363 3.692C4.713 12.69 4 12.345 4 11.692V4.308c0-.653.713-.998 1.233-.696l6.363 3.692z"></path>
-            </svg>
-          </button>
-        </div>
-      </div>
+      <span *ngIf="exam?.examFailed" class="text-primary h3">Auswertung nach Pr&uuml;fungsabbruch</span>
+      <span *ngIf="exam?.examDone" class="text-primary h3">Pr&uuml;fungsauswertung</span>
+      <ul class="list-group mt-3 mb-3">
+        <li *ngIf="exam?.examDone && exam?.examProgressPercent !== 100" class="list-group-item fs-5 text-muted">Grund: Vorzeitig abgegeben</li>
+        <li *ngIf="exam?.examReasons === 100" class="list-group-item fs-5 text-muted">Grund: Zeit abgelaufen.</li>
+        <li *ngIf="exam?.examReasons === 200" class="list-group-item fs-5 text-muted">Grund: Sie haben die Pr&uuml;fung abgebrochen.</li>
+        <li *ngIf="exam?.examReasons === 300" class="list-group-item fs-5 text-muted">Grund: 8 Fragen wurden falsch beantwortet.</li>
+        <li *ngIf="exam?.examProgress && !exam?.examDone" class="list-group-item">{{exam?.examProgress}} von {{exam?.examQuestions}} ({{exam?.examProgressPercent}}%) Fragen wurden bearbeitet</li>
+        <li *ngIf="exam?.examDone" class="list-group-item">Es wurden <strong>alle</strong> Fragen bearbeitet</li>
+        <li *ngIf="!exam?.examProgress" class="list-group-item">Es wurden <strong>keine</strong> Fragen bearbeitet</li>
+        <li *ngIf="!exam?.examFailed" class="list-group-item">Davon sind {{exam?.examRightQuestion}} Richtig und {{exam?.examFailedQuestion}} Falsch beantwortet worden.</li>
+      </ul>
+      <button type="button" (click)="exitExam();" class="btn btn-outline-primary">
+        <svg xmlns="http://www.w3.org/2000/svg" width="17" height="17" fill="currentColor" class="bi bi-reply-all" viewBox="0 0 17 17">
+          <path d="M8.098 5.013a.144.144 0 0 1 .202.134V6.3a.5.5 0 0 0 .5.5c.667 0 2.013.005 3.3.822.984.624 1.99 1.76 2.595 3.876-1.02-.983-2.185-1.516-3.205-1.799a8.74 8.74 0 0 0-1.921-.306 7.404 7.404 0 0 0-.798.008h-.013l-.005.001h-.001L8.8 9.9l-.05-.498a.5.5 0 0 0-.45.498v1.153c0 .108-.11.176-.202.134L4.114 8.254a.502.502 0 0 0-.042-.028.147.147 0 0 1 0-.252.497.497 0 0 0 .042-.028l3.984-2.933zM9.3 10.386c.068 0 .143.003.223.006.434.02 1.034.086 1.7.271 1.326.368 2.896 1.202 3.94 3.08a.5.5 0 0 0 .933-.305c-.464-3.71-1.886-5.662-3.46-6.66-1.245-.79-2.527-.942-3.336-.971v-.66a1.144 1.144 0 0 0-1.767-.96l-3.994 2.94a1.147 1.147 0 0 0 0 1.946l3.994 2.94a1.144 1.144 0 0 0 1.767-.96v-.667z"/>
+          <path d="M5.232 4.293a.5.5 0 0 0-.7-.106L.54 7.127a1.147 1.147 0 0 0 0 1.946l3.994 2.94a.5.5 0 1 0 .593-.805L1.114 8.254a.503.503 0 0 0-.042-.028.147.147 0 0 1 0-.252.5.5 0 0 0 .042-.028l4.012-2.954a.5.5 0 0 0 .106-.699z"/>
+        </svg>
+        Pr&uuml;fung beenden
+      </button>
+    </div>
+  </div>
+</ng-container>
