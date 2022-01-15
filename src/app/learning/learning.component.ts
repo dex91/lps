@@ -23,7 +23,6 @@ export class LearningComponent implements OnInit {
   constructor(
     private db: DatabaseMysqlService,
     private route: ActivatedRoute,
-    private router: Router,
     ) {
       this.modus = { ...this.modus, mode: this.moduleModus, lernmodus: true, teilpruefung: false, pruefungsmodus: false };
     this.db.setMode(this.modus);
