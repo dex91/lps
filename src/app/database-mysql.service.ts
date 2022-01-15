@@ -1,9 +1,10 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { Observable, map } from 'rxjs';
+import { Observable, map, of } from 'rxjs';
 import { retry } from 'rxjs/operators';
-import { Question, QuestionRAW, QuestionPool, Answer, Modus, examValue } from './dateninterfaces';
+import { Question, QuestionRAW, QuestionPool, Answer, Modus, examValue, examTimer } from './dateninterfaces';
 import { formatDateninterfaces } from './format-dateninterfaces';
+import { Router } from '@angular/router';
 @Injectable({
   providedIn: 'root'
 })
@@ -13,9 +14,11 @@ export class DatabaseMysqlService {
   protected apiRoot: String = "https://api.visualnetworks.eu/lps";
   private modus?: Modus;
   private exam?: examValue;
+  private timerTick?: examTimer;
 
   constructor(
     private apiClient: HttpClient,
+    private router: Router,
     ) { }
 
   APIgetPools(): Observable<QuestionPool[]> {
@@ -61,7 +64,22 @@ export class DatabaseMysqlService {
     return this.modus || {mode: ''};
   }
 
-  // Getter sowie Setter für die Prüfungssimulation.
+  // Für unseren Prüfungstimer.. Getter sowie Setter.
+  setExamTicker(modeObj: examTimer) {
+    this.timerTick = modeObj;
+  }
+
+  getExamTicker(): examTimer {
+    return this.timerTick || {tick: false};
+  }
+
+  // Getter sowie Setter für die Prüfungssimulation. Und weitere Funktionen
+  exitExam() {
+    this.exam = {exit: true, warning: false};
+    this.setExamTicker({tick: false});
+    this.router.navigate(['pruefung']);
+  }
+
   setExamValue(modeObj: examValue) {
     this.exam = modeObj;
   }
