@@ -1,7 +1,8 @@
 import { Component, OnInit } from '@angular/core';
-import { Question, Answer, Modus } from '../dateninterfaces';
+import { Question, Answer, Modus, examValue } from '../dateninterfaces';
 import { DatabaseMysqlService } from '../database-mysql.service';
 import { ActivatedRoute, NavigationStart, Router, Event } from '@angular/router';
+import { Observable } from 'rxjs';
 
 @Component({
   selector: 'lps-question',
@@ -11,9 +12,10 @@ import { ActivatedRoute, NavigationStart, Router, Event } from '@angular/router'
 export class QuestionComponent implements OnInit {
 
   // Für die API und den Modus "globale" variablen
-  questionURIid: Number = 0;
+  questionURIid: number = 0;
   poolURIName: String = "";
   modus?: Modus;
+  exam?: examValue;
 
   // Einzelfrage (lernmodus)
   selectedQuestion?: Question;
@@ -24,11 +26,15 @@ export class QuestionComponent implements OnInit {
   answerInput: String = "";
   resetButton: Boolean = false;
   answersByUser: Answer[] = [];
-  answersByQuestion: Answer[] = [];
-
-  //Variablen für den Teilprüfungsmodus
-  vorpruefungQuestionList: Question[] = []; // Hier mit ARRAY da wir daten zwischenspeichern müssen.
+  vorpruefungQuestionList: Question[] = []; // Hier mit ARRAY da wir Daten zwischenspeichern müssen.
   questionIDForArray: any;
+  questionCount: Number = 0;
+
+
+  examObserver: Observable<examValue> = new Observable(observer => {
+    observer.next(this.db.getExamValue());
+    observer.complete();
+});
 
   constructor(
     private db: DatabaseMysqlService,
@@ -36,6 +42,7 @@ export class QuestionComponent implements OnInit {
     private router: Router,
   ) {
     this.modus = this.db.getMode();
+    this.exam = this.db.getExamValue();
 
     // Beim wechseln einer Frage sollen bestimmte Aktionen ausgeführt werden.
     // z.b Das der Hilfetext ausgeblendet wird.
@@ -50,13 +57,22 @@ export class QuestionComponent implements OnInit {
   }
 
   ngOnInit(): void {
+
+    setInterval(() => {
+      this.examObserver.subscribe(examValues => {
+        this.exam = examValues;
+        this.db.setExamValue({...this.exam, examQuestions: this.vorpruefungQuestionList.length });
+      });
+    }, 150);
+
     this.route.paramMap.subscribe(nav =>{
 
-      this.questionURIid = Number(nav.get('questionId'));
+      this.questionURIid = parseInt(nav.get('questionId') || '0');
       this.poolURIName = String(nav.get('poolURIName'));
 
-      this.questionIDForArray = this.questionURIid;
-      this.questionIDForArray = this.questionIDForArray-1; // Direkt -1 rechnen, denn QuestionID != Array-Index!
+      if(this.questionURIid == 0 || this.questionURIid == null || this.questionURIid == undefined) { this.questionURIid = 1; }
+
+      this.questionIDForArray = this.questionURIid-1;
 
       if(this.modus?.teilpruefung)
       {
@@ -122,11 +138,6 @@ export class QuestionComponent implements OnInit {
 
       }
 
-      if(this.modus?.pruefungsmodus)
-      {
-        console.log("nicht implementiert");
-      }
-
       if(this.modus?.lernmodus)
       {
         this.db.APIgetQuestionById(this.questionURIid).subscribe(res => this.selectedQuestion = res);
@@ -135,9 +146,40 @@ export class QuestionComponent implements OnInit {
 
     });
 
+    if(this.modus?.pruefungsmodus)
+    {
+
+      if(this.vorpruefungQuestionList.length == 0) {
+        this.db.APIgetPoolByURIName(this.poolURIName).subscribe(pool => {
+          this.db.APIgetPruefungsQuestionsByPoolId(Number(pool.id), 2).subscribe(qlist =>
+            {
+            this.vorpruefungQuestionList = qlist;
+          })
+        });
+      }
+      // ANTWORTEN WERDEN SEPERAT GEHOLT!! NICHT JETZT!
+      // this.db.APIgetAnswerById(this.questionURIid).subscribe(answer => this.answerByQuestion = answer);
+    }
+
+
 
   }
 
+  changevalues(value: number) {
+    this.db.setExamValue({ ...this.exam, examProgress: value});
+  }
+
+  loadPruefungsQuestion(forward: Boolean){
+    let navId = this.questionURIid;
+     if (forward) {
+      this.questionURIid++;
+     } else {
+      this.questionURIid--;
+    }
+    this.db.setExamValue({ ...this.exam, examProgress: this.questionURIid});
+
+    this.router.navigate(['pruefung', this.poolURIName, this.questionURIid]);
+  }
 
   toggleHelp() {
      return this.showhelp ? this.showhelp = false : this.showhelp = true;
@@ -146,8 +188,8 @@ export class QuestionComponent implements OnInit {
   selectAnswer(button: HTMLElement, answerID: any, modus: String, liste?: HTMLElement){
 
     // Zählervariablen als Prüfvariablen
-    let counterofRightAnswers = 0;
-    let counterofGivenRightAnswers = 0;
+    let counterofRightAnswersAavailable = 0;
+    let counterofGivenAnswers = 0;
 
       // Prüfen ob ausgewählte Antwort schon einmal selektiert wurde
       // Wenn ja, dann heißt dies, Antwort DE-Selektieren
@@ -161,7 +203,7 @@ export class QuestionComponent implements OnInit {
 
       // Über die ANTWORTEN itterieren und zählen wie viele Antworten einer Frage RICHTIG sind.
       this.answerByQuestion.answers.forEach(answer => {
-        answer == '1' ? counterofRightAnswers++ : false
+        answer == '1' ? counterofRightAnswersAavailable++ : false
       });
 
       if(liste)
@@ -173,12 +215,12 @@ export class QuestionComponent implements OnInit {
         for(let i = 0; i < liste.children.length; i++)
         {
           if(liste.children[i].hasAttribute('disabled')){
-            counterofGivenRightAnswers++
+            counterofGivenAnswers++
           }
         }
 
         // Wenn die countervariablen übereinstimmen, wird die frage gesperrt.
-        if(counterofGivenRightAnswers === counterofRightAnswers)
+        if(counterofGivenAnswers === counterofRightAnswersAavailable)
         {
           for (let i = 0; i < liste.children.length; i++) {
             liste.children[i].setAttribute('disabled', '');
@@ -242,6 +284,7 @@ export class QuestionComponent implements OnInit {
   checkAnswer(index: any, answer: String, isText: Boolean)
   {
     let btntoChange = document.getElementById(`answerButton_${index}`);
+    let modalWrongAnswer = document.getElementById('triggerUser');
 
     if(isText) { index = 0; }
 
@@ -254,6 +297,7 @@ export class QuestionComponent implements OnInit {
       btntoChange?.classList.remove('border-warning');
       btntoChange?.classList.add('border-danger');
       btntoChange?.setAttribute('disabled', '');
+      modalWrongAnswer?.click();
     }
 
     this.resetButton = true;
