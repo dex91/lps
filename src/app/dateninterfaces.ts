@@ -47,9 +47,19 @@ export interface Modus{
 export interface examValue {
   examStarted?: Boolean,
   examFailed?: Boolean,
-  examRightQuestion?: Number,
-  examFailedQuestion?: Number,
-  examProgress?: Number,
+  examDone?: Boolean,
+  examRightQuestion?: number,
+  examFailedQuestion?: number,
+  examQuestions?: number,
+  examProgress?: number,
   examTimer?: any,
-  examReasons?: String,
+  examReasons?: Number,
+  examProgressPercent?: number,
+  warning?: Boolean,
+  showProgress?: Boolean,
+  exit?: Boolean,
+}
+
+export interface examTimer {
+  tick?: Boolean
 }
