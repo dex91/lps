@@ -49,7 +49,7 @@
         <p *ngIf="vorpruefungQuestionList[questionIDForArray].q_answer_type !== 3" class="font-italic text-justify"><i class="bi bi-mortarboard"> Mehrfachantwort m&ouml;glich!</i></p>
 
         <ng-container *ngIf="vorpruefungQuestionList[questionIDForArray].q_helptext && !showhelp">
-          <p class="text-justify align-items-center" style="float: right;">
+          <p class="text-justify align-items-center" style="float: right; margin-left: 16px;">
             <button (click)="toggleHelp();" type="button" class="btn btn-outline-warning btn-sm">
               <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-lightbulb" viewBox="0 0 16 16"><path d="M2 6a6 6 0 1 1 10.174 4.31c-.203.196-.359.4-.453.619l-.762 1.769A.5.5 0 0 1 10.5 13a.5.5 0 0 1 0 1 .5.5 0 0 1 0 1l-.224.447a1 1 0 0 1-.894.553H6.618a1 1 0 0 1-.894-.553L5.5 15a.5.5 0 0 1 0-1 .5.5 0 0 1 0-1 .5.5 0 0 1-.46-.302l-.761-1.77a1.964 1.964 0 0 0-.453-.618A5.984 5.984 0 0 1 2 6zm6-5a5 5 0 0 0-3.479 8.592c.263.254.514.564.676.941L5.83 12h4.342l.632-1.467c.162-.377.413-.687.676-.941A5 5 0 0 0 8 1z"></path></svg>
               <small style="color: #000000;">&nbsp;Klick f&uuml;r Hilfe ;)</small>
@@ -108,6 +108,115 @@
           </svg>
           Frage Zur&uuml;cksetzen
         </button>
+      </ng-container>
+
+      </div>
+    </div>
+  </div>
+
+<!-- Button trigger modal -->
+<button type="button" id="triggerUser" class="btn btn-primary" data-toggle="modal" data-target="#wrongAnswer" hidden>CLICKMICH</button>
+
+<!-- Modal -->
+<div class="modal fade" id="wrongAnswer" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="exampleModalLongTitle">Whoops!</h5>
+      </div>
+      <div class="modal-body">
+        Diese Antwort ist leider nicht korrekt!
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-primary" data-dismiss="modal">Schlie&szlig;en</button>
+      </div>
+    </div>
+  </div>
+</div>
+</ng-container>
+
+
+<ng-container *ngIf="modus?.pruefungsmodus">
+  <div *ngIf="vorpruefungQuestionList.length > 0"class="col-mb-8">
+    <div class="card text-left">
+      <div class="card-header text-center">Frage Nr. {{questionIDForArray+1}} von {{vorpruefungQuestionList.length}}</div>
+      <div class="card-body">
+
+        <h6 class="card-title" style="white-space: pre-wrap; margin-bottom: 3%; margin-top: 3%; text-align: center;">{{vorpruefungQuestionList[questionIDForArray].q_title}}</h6>
+
+        <ng-container *ngIf="vorpruefungQuestionList[questionIDForArray].q_answer_type == 3">
+          <div class="d-flex justify-content-center">
+            <div class="p-2">
+              <p class="font-italic text-justify"><i class="bi bi-mortarboard"></i> Bitte gebe die L&ouml;sung in das Feld ein</p>
+              <input #answerInputElement [(ngModel)]="answerInput" id="answerButton_{{vorpruefungQuestionList[questionIDForArray].id}}" type="text" name="textanswer-{{vorpruefungQuestionList[questionIDForArray].id}}" class="form-control form-control-sm" placeholder="Deine Antwort">
+            </div>
+          </div>
+          <div class="d-flex justify-content-center">
+            <div *ngIf="questionURIid > 1" class="p-2">
+              <button type="button" (click)="loadPruefungsQuestion(false);" class="btn btn-secondary btn-sm">
+                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-arrow-left-square" viewBox="0 0 16 16">
+                  <path fill-rule="evenodd" d="M15 2a1 1 0 0 0-1-1H2a1 1 0 0 0-1 1v12a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1V2zM0 2a2 2 0 0 1 2-2h12a2 2 0 0 1 2 2v12a2 2 0 0 1-2 2H2a2 2 0 0 1-2-2V2zm11.5 5.5a.5.5 0 0 1 0 1H5.707l2.147 2.146a.5.5 0 0 1-.708.708l-3-3a.5.5 0 0 1 0-.708l3-3a.5.5 0 1 1 .708.708L5.707 7.5H11.5z"/>
+                </svg>
+                Frage zur&uuml;ck
+              </button>
+            </div>
+
+            <div class="p-2">
+              <button type="button" (click)="selectAnswer(answerInputElement, vorpruefungQuestionList[questionIDForArray].id, 'pruefung');" type="submit" class="btn btn-primary btn-sm">
+                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-folder-symlink" viewBox="0 0 16 16">
+                  <path d="m11.798 8.271-3.182 1.97c-.27.166-.616-.036-.616-.372V9.1s-2.571-.3-4 2.4c.571-4.8 3.143-4.8 4-4.8v-.769c0-.336.346-.538.616-.371l3.182 1.969c.27.166.27.576 0 .742z"/>
+                  <path d="m.5 3 .04.87a1.99 1.99 0 0 0-.342 1.311l.637 7A2 2 0 0 0 2.826 14h10.348a2 2 0 0 0 1.991-1.819l.637-7A2 2 0 0 0 13.81 3H9.828a2 2 0 0 1-1.414-.586l-.828-.828A2 2 0 0 0 6.172 1H2.5a2 2 0 0 0-2 2zm.694 2.09A1 1 0 0 1 2.19 4h11.62a1 1 0 0 1 .996 1.09l-.636 7a1 1 0 0 1-.996.91H2.826a1 1 0 0 1-.995-.91l-.637-7zM6.172 2a1 1 0 0 1 .707.293L7.586 3H2.19c-.24 0-.47.042-.683.12L1.5 2.98a1 1 0 0 1 1-.98h3.672z"/>
+                </svg>
+                Frage abgeben
+              </button>
+            </div>
+
+            <div *ngIf="questionURIid !== vorpruefungQuestionList.length" class="p-2">
+            <button type="button" (click)="loadPruefungsQuestion(true);" class="btn btn-secondary btn-sm">
+              N&auml;chste Frage
+              <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-arrow-right-square" viewBox="0 0 16 16">
+                <path fill-rule="evenodd" d="M15 2a1 1 0 0 0-1-1H2a1 1 0 0 0-1 1v12a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1V2zM0 2a2 2 0 0 1 2-2h12a2 2 0 0 1 2 2v12a2 2 0 0 1-2 2H2a2 2 0 0 1-2-2V2zm4.5 5.5a.5.5 0 0 0 0 1h5.793l-2.147 2.146a.5.5 0 0 0 .708.708l3-3a.5.5 0 0 0 0-.708l-3-3a.5.5 0 1 0-.708.708L10.293 7.5H4.5z"></path>
+              </svg>
+            </button>
+          </div>
+          </div>
+          </ng-container>
+
+        <ng-container #singleMultipleAnswers *ngIf="vorpruefungQuestionList[questionIDForArray].q_answer_type == 1 || vorpruefungQuestionList[questionIDForArray].q_answer_type == 2">
+        <ul #Auswahlliste id="auswahlliste" class="list-group list-group-flush">
+          <ng-container *ngFor="let anzeigeAntwort of vorpruefungQuestionList[questionIDForArray].q_answers; index as i">
+            <button #btnAnswer id="answerButton_{{i}}" (click)="selectAnswer(btnAnswer, i, 'pruefung', Auswahlliste)" class="list-group-item d-flex justify-content-between align-items-center mb-2 border">{{anzeigeAntwort}}</button>
+          </ng-container>
+        </ul>
+        <div class="d-flex justify-content-center mt-3">
+          <div *ngIf="questionURIid > 1" class="p-2">
+            <button #buttonBack type="button" (click)="loadPruefungsQuestion(false);" class="btn btn-secondary btn-sm">
+              <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-arrow-left-square" viewBox="0 0 16 16">
+                <path fill-rule="evenodd" d="M15 2a1 1 0 0 0-1-1H2a1 1 0 0 0-1 1v12a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1V2zM0 2a2 2 0 0 1 2-2h12a2 2 0 0 1 2 2v12a2 2 0 0 1-2 2H2a2 2 0 0 1-2-2V2zm11.5 5.5a.5.5 0 0 1 0 1H5.707l2.147 2.146a.5.5 0 0 1-.708.708l-3-3a.5.5 0 0 1 0-.708l3-3a.5.5 0 1 1 .708.708L5.707 7.5H11.5z"/>
+              </svg>
+              Frage zur&uuml;ck
+            </button>
+          </div>
+
+          <div class="p-2">
+            <button #buttonAbsenden type="button" (click)="selectAnswer(buttonAbsenden, vorpruefungQuestionList[questionIDForArray].id, 'pruefung');" type="submit" class="btn btn-primary btn-sm">
+              <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-folder-symlink" viewBox="0 0 16 16">
+                <path d="m11.798 8.271-3.182 1.97c-.27.166-.616-.036-.616-.372V9.1s-2.571-.3-4 2.4c.571-4.8 3.143-4.8 4-4.8v-.769c0-.336.346-.538.616-.371l3.182 1.969c.27.166.27.576 0 .742z"/>
+                <path d="m.5 3 .04.87a1.99 1.99 0 0 0-.342 1.311l.637 7A2 2 0 0 0 2.826 14h10.348a2 2 0 0 0 1.991-1.819l.637-7A2 2 0 0 0 13.81 3H9.828a2 2 0 0 1-1.414-.586l-.828-.828A2 2 0 0 0 6.172 1H2.5a2 2 0 0 0-2 2zm.694 2.09A1 1 0 0 1 2.19 4h11.62a1 1 0 0 1 .996 1.09l-.636 7a1 1 0 0 1-.996.91H2.826a1 1 0 0 1-.995-.91l-.637-7zM6.172 2a1 1 0 0 1 .707.293L7.586 3H2.19c-.24 0-.47.042-.683.12L1.5 2.98a1 1 0 0 1 1-.98h3.672z"/>
+              </svg>
+              Frage abgeben
+            </button>
+          </div>
+
+          <div *ngIf="questionURIid !== vorpruefungQuestionList.length" class="p-2">
+          <button #buttonForward type="button" (click)="loadPruefungsQuestion(true);" class="btn btn-secondary btn-sm">
+            N&auml;chste Frage
+            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-arrow-right-square" viewBox="0 0 16 16">
+              <path fill-rule="evenodd" d="M15 2a1 1 0 0 0-1-1H2a1 1 0 0 0-1 1v12a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1V2zM0 2a2 2 0 0 1 2-2h12a2 2 0 0 1 2 2v12a2 2 0 0 1-2 2H2a2 2 0 0 1-2-2V2zm4.5 5.5a.5.5 0 0 0 0 1h5.793l-2.147 2.146a.5.5 0 0 0 .708.708l3-3a.5.5 0 0 0 0-.708l-3-3a.5.5 0 1 0-.708.708L10.293 7.5H4.5z"></path>
+            </svg>
+          </button>
+        </div>
+        </div>
       </ng-container>
 
       </div>
