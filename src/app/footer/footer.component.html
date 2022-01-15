@@ -6,7 +6,7 @@
   </a>
 
   <ul class="nav col-md-4 justify-content-end">
-    <li *ngIf="router.url !== '/pruefung'" class="nav-item"><a routerLink="/start" class="nav-link px-2 text-muted">Startseite</a></li>
+    <li *ngIf="!router.url.includes('pruefung')" class="nav-item"><a routerLink="/start" class="nav-link px-2 text-muted">Startseite</a></li>
     <li class="nav-item"><a href="https://www.bitlc.de" target="_blank" class="nav-link px-2 text-muted">BITLC</a></li>
     <li class="nav-item"><a href="https://api.visualnetworks.eu/lps/" target="_blank" class="nav-link px-2 text-muted">LPS API</a></li>
   </ul>
