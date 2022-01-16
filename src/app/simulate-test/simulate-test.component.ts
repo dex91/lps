@@ -76,7 +76,7 @@ export class SimulateTestComponent implements OnInit {
 
   startExam() {
     //this.exam = { examStarted: true, examTimer: 300, examProgress: 50, examFailed: false, examFailedQuestion: 0, examRightQuestion: 0, warning: true }
-    this.exam = { ...this.exam , examStarted: true, examTimer: 800, examProgressPercent: 0, showProgress: true }
+    this.exam = { ...this.exam , examStarted: true, examTimer: 5, examProgressPercent: 0, showProgress: true }
     this.db.setExamValue(this.exam);
     this.router.navigate(['pruefung', this.poolURIName, 1]);
   }
