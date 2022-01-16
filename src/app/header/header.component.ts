@@ -16,6 +16,7 @@ export class HeaderComponent implements OnInit, AfterViewInit {
   timerTick?: examTimer;
   exam: examValue = {};
   examProgress: number = 0;
+  progressBarWidth: Number = 0;
 
   examObserver: Observable<examValue> = new Observable(observer => {
     setInterval(() => {
@@ -43,7 +44,7 @@ export class HeaderComponent implements OnInit, AfterViewInit {
           this.examObserver.subscribe(examValues => {
             this.exam = examValues;
 
-            if (this.exam.exit) { this.examProgress = 0; }
+            this.exam.exit ? this.examProgress = 0 : false;
 
             if (this.exam.examStarted) {
               this.timerTick = this.db.getExamTicker();
@@ -59,6 +60,9 @@ export class HeaderComponent implements OnInit, AfterViewInit {
                 this.examProgress = Math.round((this.exam.examProgress * 100) / this.exam.examQuestions);
                 this.db.setExamValue({ ...this.exam, examProgressPercent: this.examProgress, showProgress: true });
               }
+
+              this.examProgress >= 100 ? this.progressBarWidth = 74 : this.progressBarWidth = 50;
+
             }
           });
         }
@@ -118,6 +122,7 @@ startTimer(duration: any, display: any) {
         if (timer <= -1)
         {
           clearInterval(timefunc);
+          this.progressBarWidth = 74;
         }
 
         if (timer < 0) {
@@ -134,9 +139,18 @@ startTimer(duration: any, display: any) {
           this.cancelExam(2);
           timereinheit?.classList.remove('five-seconds-warning');
           timereinheit?.classList.add('just-red');
+          this.progressBarWidth = 74;
           clearInterval(timefunc);
           minutes = "00";
           seconds = "00";
+        }
+
+        if(this.exam?.examDone)
+        {
+          timereinheit?.classList.remove('five-seconds-warning');
+          timereinheit?.classList.remove('ten-seconds-warning');
+          timereinheit?.classList.add('just-green');
+          clearInterval(timefunc);
         }
 
         display ? display.textContent = minutes + ":" + seconds : false;
