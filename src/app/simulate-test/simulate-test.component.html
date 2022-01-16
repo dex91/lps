@@ -12,7 +12,7 @@
       <li class="list-group-item">Die Pr&uuml;fung kann jederzeit abgebrochen werden.</li>
       <li class="list-group-item">Jede Frage <strong>muss</strong> &quot;eingereicht&quot; werden.</li>
       <li class="list-group-item">&quot;Eingereichte&quot; Fragen k&ouml;nnen <i>nicht</i> mehr bearbeitet werden.</li>
-      <li class="list-group-item">Wenn alle Fragen bearbeitet wurden erhalten Sie sofort das Ergebnis der Pr&uuml;fung</li>
+      <li class="list-group-item">Wenn alle Fragen bearbeitet wurden erhalten Sie sofort das Ergebnis der Pr&uuml;fung.</li>
       <li class="list-group-item">Achtung: Bei 8 Falschen Antworten oder nach ablauf der Zeit wird die Pr&uuml;fungssimulation abgebrochen.</li>
     </ul>
     <button type="button" (click)="warningAccepted();" class="btn btn-outline-primary">
@@ -44,7 +44,7 @@
         <li *ngIf="exam?.examReasons === 300" class="list-group-item fs-5 text-muted">Grund: 8 Fragen wurden falsch beantwortet.</li>
         <li *ngIf="exam?.examDone" class="list-group-item">Es wurden <strong>alle</strong> Fragen bearbeitet</li>
         <li *ngIf="!exam?.examProgress" class="list-group-item">Es wurden <strong>keine</strong> Fragen bearbeitet</li>
-        <li *ngIf="exam?.examProgress && exam?.examFailed" class="list-group-item">{{exam?.examProgress}} von {{exam?.examQuestions}} ({{exam?.examProgressPercent}}%) Fragen wurden bearbeitet</li>
+        <li *ngIf="exam?.examProgress && exam?.examFailed" class="list-group-item"> SIe haben {{exam?.examProgress}} von {{exam?.examQuestions}} Fragen bearbeitet. Dies entspricht {{exam?.examProgressPercent}}%.</li>
         <li *ngIf="!exam?.examFailed" class="list-group-item">Davon sind {{exam?.examRightQuestion}} Richtig und {{exam?.examFailedQuestion}} Falsch beantwortet worden.</li>
       </ul>
       <button type="button" (click)="exitExam();" class="btn btn-outline-primary">
