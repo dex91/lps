@@ -7,15 +7,13 @@
   <div class="col-md-12">
     <span class="text-primary h3">Wichtige information!</span>
     <ul class="list-group mt-3 mb-3">
-      <li class="list-group-item">Sie haben 5 Minuten Zeit f&uuml;r 24 Fragen.</li>
-      <li class="list-group-item">Bei 8 Falschen Antworten oder nach ablauf der Zeit wird die Pr&uuml;fungssimulation
-        abgebrochen.</li>
-      <li class="list-group-item">Es gibt <strong>keine</strong> Teilpunkte!</li>
-      <li class="list-group-item">Hilfestellungen sind deaktiviert.</li>
+      <li class="list-group-item">Sie haben 30 Minuten Zeit f&uuml;r 24 Fragen.</li>
+      <li class="list-group-item">Es gibt <strong>keine</strong> Teilpunkte oder Hilfestellungen!</li>
       <li class="list-group-item">Die Pr&uuml;fung kann jederzeit abgebrochen werden.</li>
-      <li class="list-group-item">Jede Frage <strong>muss</strong> &quot;abgegeben&quot; werden.</li>
-      <li class="list-group-item">&quot;Abgegebene&quot; Fragen k&ouml;nnen <i>nicht</i> mehr bearbeitet werden.</li>
-      <li class="list-group-item">Wenn alle Fragen bearbeitet wurden <strong>m&uuml;ssen</strong> Sie selbst die Pr&uuml;fung noch abgeben.</li>
+      <li class="list-group-item">Jede Frage <strong>muss</strong> &quot;eingereicht&quot; werden.</li>
+      <li class="list-group-item">&quot;Eingereichte&quot; Fragen k&ouml;nnen <i>nicht</i> mehr bearbeitet werden.</li>
+      <li class="list-group-item">Wenn alle Fragen bearbeitet wurden erhalten Sie sofort das Ergebnis der Pr&uuml;fung</li>
+      <li class="list-group-item">Achtung: Bei 8 Falschen Antworten oder nach ablauf der Zeit wird die Pr&uuml;fungssimulation abgebrochen.</li>
     </ul>
     <button type="button" (click)="warningAccepted();" class="btn btn-outline-primary">
       Weiter: Fragenkatalog ausw&auml;hlen
@@ -41,13 +39,12 @@
       <span *ngIf="exam?.examFailed" class="text-primary h3">Auswertung nach Pr&uuml;fungsabbruch</span>
       <span *ngIf="exam?.examDone" class="text-primary h3">Pr&uuml;fungsauswertung</span>
       <ul class="list-group mt-3 mb-3">
-        <li *ngIf="exam?.examDone && exam?.examProgressPercent !== 100" class="list-group-item fs-5 text-muted">Grund: Vorzeitig abgegeben</li>
         <li *ngIf="exam?.examReasons === 100" class="list-group-item fs-5 text-muted">Grund: Zeit abgelaufen.</li>
         <li *ngIf="exam?.examReasons === 200" class="list-group-item fs-5 text-muted">Grund: Sie haben die Pr&uuml;fung abgebrochen.</li>
         <li *ngIf="exam?.examReasons === 300" class="list-group-item fs-5 text-muted">Grund: 8 Fragen wurden falsch beantwortet.</li>
-        <li *ngIf="exam?.examProgress && !exam?.examDone" class="list-group-item">{{exam?.examProgress}} von {{exam?.examQuestions}} ({{exam?.examProgressPercent}}%) Fragen wurden bearbeitet</li>
         <li *ngIf="exam?.examDone" class="list-group-item">Es wurden <strong>alle</strong> Fragen bearbeitet</li>
         <li *ngIf="!exam?.examProgress" class="list-group-item">Es wurden <strong>keine</strong> Fragen bearbeitet</li>
+        <li *ngIf="exam?.examProgress && exam?.examFailed" class="list-group-item">{{exam?.examProgress}} von {{exam?.examQuestions}} ({{exam?.examProgressPercent}}%) Fragen wurden bearbeitet</li>
         <li *ngIf="!exam?.examFailed" class="list-group-item">Davon sind {{exam?.examRightQuestion}} Richtig und {{exam?.examFailedQuestion}} Falsch beantwortet worden.</li>
       </ul>
       <button type="button" (click)="exitExam();" class="btn btn-outline-primary">
