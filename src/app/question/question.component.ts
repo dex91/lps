@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { Question, Answer, Modus, examValue } from '../dateninterfaces';
 import { DatabaseMysqlService } from '../database-mysql.service';
-import { ActivatedRoute, NavigationStart, Router, Event } from '@angular/router';
+import { ActivatedRoute, NavigationStart, Router, Event, NavigationEnd } from '@angular/router';
 import { Observable } from 'rxjs';
 
 @Component({
@@ -16,19 +16,17 @@ export class QuestionComponent implements OnInit {
   poolURIName: String = "";
   modus?: Modus;
   exam?: examValue;
-
-  // Einzelfrage (lernmodus)
-  selectedQuestion?: Question;
-  answerByQuestion: Answer = { id: 0, answers: [] };
+  questionList: Question[] = [];
+  answerList: Answer[] = [];
 
   // Variablen für Teil und Prüfungsmodus
   showhelp: Boolean = false;
   answerInput: String = "";
   resetButton: Boolean = false;
   answersByUser: Answer[] = [];
-  vorpruefungQuestionList: Question[] = []; // Hier mit ARRAY da wir Daten zwischenspeichern müssen.
   questionIDForArray: any;
-  questionCount: Number = 0;
+  counterofGivenAnswers = 0;
+  counterofRightAnswersAavailable = 0;
 
 
   examObserver: Observable<examValue> = new Observable(observer => {
@@ -48,9 +46,14 @@ export class QuestionComponent implements OnInit {
     // z.b Das der Hilfetext ausgeblendet wird.
     // z.b Das der Resetbutton verschwindet (da das laden der Frage anders von statten gehen soll)
     this.router.events.subscribe((event: Event) => {
-      if (event instanceof NavigationStart) {
+      if (event instanceof NavigationStart || event instanceof NavigationEnd) {
           this.showhelp = false;
           this.resetButton = false;
+
+          setTimeout(() => {
+            this.reloadQuestion();
+          },250);
+
       }
   });
 
@@ -61,116 +64,33 @@ export class QuestionComponent implements OnInit {
     setInterval(() => {
       this.examObserver.subscribe(examValues => {
         this.exam = examValues;
-        this.db.setExamValue({...this.exam, examQuestions: this.vorpruefungQuestionList.length });
+        this.db.setExamValue({...this.exam, examQuestions: this.questionList.length });
       });
     }, 150);
 
     this.route.paramMap.subscribe(nav =>{
-
       this.questionURIid = parseInt(nav.get('questionId') || '0');
       this.poolURIName = String(nav.get('poolURIName'));
-
       if(this.questionURIid == 0 || this.questionURIid == null || this.questionURIid == undefined) { this.questionURIid = 1; }
-
       this.questionIDForArray = this.questionURIid-1;
-
-      if(this.modus?.teilpruefung)
-      {
-        if(this.vorpruefungQuestionList.length == 0) {
-          this.db.APIgetPoolByURIName(this.poolURIName).subscribe(pool => {
-            this.db.APIgetQuestionsByPoolId(Number(pool.id)).subscribe(qlist => this.vorpruefungQuestionList = qlist);
-          });
-        }
-        this.db.APIgetAnswerById(this.questionURIid).subscribe(answer => this.answerByQuestion = answer);
-
-        // Fragen mit vom user ausgewählten antworten bestücken
-        // Dies geschiet nur, wenn eine Frage beantwortet wurde,
-        // sonst wird nur das formular entsperrt.
-        // MUSS mit timeout gemacht werden... Daten benötigen etwas zeit...
-        setTimeout(() => {
-          if(this.vorpruefungQuestionList[this.questionIDForArray].q_answered == true)
-          {
-            this.answersByUser.forEach((el, i) =>
-            {
-              if(this.answerByQuestion.id == this.answersByUser[i].id)
-              {
-
-                if(this.vorpruefungQuestionList[this.questionIDForArray].q_answer_type === 3)
-                {
-                  this.checkAnswer(this.vorpruefungQuestionList[this.questionIDForArray].id, this.answersByUser[i].answers[0], true);
-                  this.answerInput = this.answersByUser[i].answers[0];
-                }
-                else {
-                  this.answersByUser[i].answers.forEach((el, y) =>
-                  {
-                    if(this.answersByUser[i].answers[y] == '1')
-                    {
-                      this.checkAnswer(y, this.answersByUser[i].answers[y], false);
-                    }
-
-                  });
-                }
-              }
-            });
-          }
-          else {
-            if(this.vorpruefungQuestionList[this.questionIDForArray].q_answer_type === 3)
-            {
-              let ele = document.getElementById(`answerButton_${this.vorpruefungQuestionList[this.questionIDForArray].id}`)
-              this.answerInput = "";
-              ele?.removeAttribute('disabled');
-              ele?.classList.remove('border-success');
-              ele?.classList.remove('border-danger');
-              ele?.classList.remove('border-warning');
-            }
-            else {
-
-              this.answerByQuestion.answers.forEach((el, z) =>
-              {
-              let ele = document.getElementById(`answerButton_${z}`);
-              ele?.removeAttribute('disabled');
-              ele?.classList.remove('border-success');
-              ele?.classList.remove('border-danger');
-              ele?.classList.remove('border-warning'); });
-            }
-          }
-        },150);
-
-      }
-
-      if(this.modus?.lernmodus)
-      {
-        this.db.APIgetQuestionById(this.questionURIid).subscribe(res => this.selectedQuestion = res);
-        this.db.APIgetAnswerById(this.questionURIid).subscribe(res => this.answerByQuestion = res);
-      }
-
     });
 
     if(this.modus?.pruefungsmodus)
     {
-
-      if(this.vorpruefungQuestionList.length == 0) {
-        this.db.APIgetPoolByURIName(this.poolURIName).subscribe(pool => {
-          this.db.APIgetPruefungsQuestionsByPoolId(Number(pool.id), 2).subscribe(qlist =>
-            {
-            this.vorpruefungQuestionList = qlist;
-          })
-        });
-      }
-      // ANTWORTEN WERDEN SEPERAT GEHOLT!! NICHT JETZT!
-      // this.db.APIgetAnswerById(this.questionURIid).subscribe(answer => this.answerByQuestion = answer);
+      this.db.APIgetPoolByURIName(this.poolURIName).subscribe(pool => {
+        this.db.APIgetPruefungsQuestionsByPoolId(Number(pool.id), 1).subscribe(qlist => this.questionList = qlist);
+        this.db.APIgetAnswersByPoolId(Number(pool.id)).subscribe(alist => this.answerList = alist);
+      });
     }
-
-
-
-  }
-
-  changevalues(value: number) {
-    this.db.setExamValue({ ...this.exam, examProgress: value});
+    else {
+      this.db.APIgetPoolByURIName(this.poolURIName).subscribe(pool => {
+        this.db.APIgetQuestionsByPoolId(Number(pool.id)).subscribe(qlist => this.questionList = qlist);
+        this.db.APIgetAnswersByPoolId(Number(pool.id)).subscribe(alist => this.answerList = alist);
+      });
+    }
   }
 
   loadPruefungsQuestion(forward: Boolean){
-    let navId = this.questionURIid;
      if (forward) {
       this.questionURIid++;
      } else {
@@ -178,58 +98,163 @@ export class QuestionComponent implements OnInit {
     }
     this.db.setExamValue({ ...this.exam, examProgress: this.questionURIid});
 
-    this.router.navigate(['pruefung', this.poolURIName, this.questionURIid]);
+    this.router.navigate([this.modus?.mode, this.poolURIName, this.questionURIid]);
   }
 
-  toggleHelp() {
-     return this.showhelp ? this.showhelp = false : this.showhelp = true;
-  }
+  reloadQuestion() {
 
-  selectAnswer(button: HTMLElement, answerID: any, modus: String, liste?: HTMLElement){
+    // Eingabefeld VORHER zurücksetzen....
+    this.answerInput = "";
+    document.getElementById(`answerButton_${this.questionList[this.questionIDForArray].id}`)?.classList.remove('border-warning');
+    document.getElementById(`frageEinreichen_${this.questionList[this.questionIDForArray].id}`)?.setAttribute('disabled', '');
 
-    // Zählervariablen als Prüfvariablen
-    let counterofRightAnswersAavailable = 0;
-    let counterofGivenAnswers = 0;
+    let liste = document.getElementById('auswahlliste');
 
-      // Prüfen ob ausgewählte Antwort schon einmal selektiert wurde
-      // Wenn ja, dann heißt dies, Antwort DE-Selektieren
-      if(button.classList.contains('border-warning')) {
-        button.classList.remove('border-warning');
-      } else {
-        button.classList.add('border-warning');
+    if (liste) {
+      for (let i = 0; i < liste.children.length; i++) {
+        liste.children[i].classList.remove('border-warning');
+        liste.children[i].classList.remove('border-danger');
+        liste.children[i].classList.remove('border-success');
+        liste.children[i].removeAttribute('disabled');
       }
+    }
 
-      this.createAnswerbyUserObject(liste);
-
-      // Über die ANTWORTEN itterieren und zählen wie viele Antworten einer Frage RICHTIG sind.
-      this.answerByQuestion.answers.forEach(answer => {
-        answer == '1' ? counterofRightAnswersAavailable++ : false
-      });
-
-      if(liste)
+    // Modus prüfen
+    if(this.modus?.mode !== 'pruefung')
+    {
+      // Prüfen ob die Frage beantwortet wurde (teilprüfmodi)
+      if(this.questionList[this.questionIDForArray].q_answered == true)
       {
+        this.answersByUser.forEach((el, i) =>
+        {
+          if(this.answerList[this.questionIDForArray].id == this.answersByUser[i].id)
+          {
+
+            if(this.questionList[this.questionIDForArray].q_answer_type === 3)
+            {
+              this.checkAnswer(this.questionList[this.questionIDForArray].id, this.answersByUser[i].answers[0], true);
+              this.answerInput = this.answersByUser[i].answers[0];
+            }
+            else {
+              this.answersByUser[i].answers.forEach((el, y) =>
+              {
+                if(this.answersByUser[i].answers[y] == '1')
+                {
+                  this.checkAnswer(y, this.answersByUser[i].answers[y], false);
+                }
+
+              });
+            }
+          }
+        });
+      }
+    } else {
+
+      this.answersByUser.forEach((el, i) =>
+      {
+
+        if(this.questionList[this.questionIDForArray].id == this.answersByUser[i].id)
+        {
+          if(this.questionList[this.questionIDForArray].q_answer_type === 3)
+          {
+            let btnToChange = document.getElementById(`answerButton_${this.questionList[i].id}`);
+            document.getElementById(`frageEinreichen_${this.questionList[this.questionIDForArray].id}`)?.removeAttribute('disabled');
+            this.answerInput = this.answersByUser[i].answers[0];
+            if(btnToChange) {
+              this.selectAnswer(btnToChange, i, this.answersByUser[i].id);
+            }
+          }
+          else {
+            this.answersByUser[i].answers.forEach((el, y) =>
+            {
+              if(this.answersByUser[i].answers[y] == '1')
+              {
+                document.getElementById(`frageEinreichen_${this.questionList[this.questionIDForArray].id}`)?.removeAttribute('disabled');
+                let btnToChange = document.getElementById(`answerButton_${this.answersByUser[i].id}_${y}`)?.classList.add('border-warning');
+                if(btnToChange) {
+                this.selectAnswer(btnToChange, y, this.answersByUser[i].id);
+                }
+              }
+
+            });
+          }
+        }
+
+      });
+    }
+  }
+
+  selectAnswer(button: HTMLElement, answerID: any, questionID: any, liste?: HTMLElement) {
+
+    this.counterofRightAnswersAavailable = 0;
+    this.counterofGivenAnswers = 0;
+
+    if (this.modus?.mode !== 'pruefung') {
+
+      if (liste) {
         this.checkAnswer(answerID, '1', false);
+        // Über die ANTWORTEN itterieren und zählen wie viele Antworten einer Frage RICHTIG sind.
+        this.answerList[this.questionIDForArray].answers.forEach(answer => {
+          answer == '1' ? this.counterofRightAnswersAavailable++ : false
+        });
 
         // Über das HTML Element iterrieren um herauszufinden welche buttons schon geklickt wurden.
         // Anhand des attributes "disabled"
-        for(let i = 0; i < liste.children.length; i++)
-        {
-          if(liste.children[i].hasAttribute('disabled')){
-            counterofGivenAnswers++
+        for (let i = 0; i < liste.children.length; i++) {
+          if (liste.children[i].hasAttribute('disabled')) {
+            this.counterofGivenAnswers++;
           }
         }
 
         // Wenn die countervariablen übereinstimmen, wird die frage gesperrt.
-        if(counterofGivenAnswers === counterofRightAnswersAavailable)
-        {
+        if (this.counterofGivenAnswers === this.counterofRightAnswersAavailable) {
           for (let i = 0; i < liste.children.length; i++) {
             liste.children[i].setAttribute('disabled', '');
           }
         }
       } else { this.checkAnswer(answerID, this.answerInput, true); }
+
+      this.createAnswerbyUserObject(questionID, liste);
+
+    } else {
+
+      let btnFrageEinreichen = document.getElementById(`frageEinreichen_${this.questionList[this.questionIDForArray].id}`);
+
+      if(this.questionList[this.questionIDForArray].q_answer_type === 3)
+      {
+        if (!this.answerInput) {
+          btnFrageEinreichen?.setAttribute('disabled', '');
+          button?.classList.remove('border-warning');
+        } else {
+          btnFrageEinreichen?.removeAttribute('disabled');
+          button?.classList.add('border-warning');
+        }
+      }
+      else {
+
+      // Prüfen ob ausgewählte Antwort schon einmal selektiert wurde
+      // Wenn ja, dann heißt dies, Antwort DE-Selektieren
+      if (button.classList.contains('border-warning')) {
+        button.classList.remove('border-warning');
+      } else {
+        button.classList.add('border-warning');
+      }
+
+      if(liste) {
+        for (let i = 0; i < liste.children.length; i++) {
+          if (liste.children[i].classList.contains('border-warning')) {
+            this.counterofGivenAnswers++;
+          }
+        }
+      }
+      this.counterofGivenAnswers <= 0 ? btnFrageEinreichen?.setAttribute('disabled', '') : btnFrageEinreichen?.removeAttribute('disabled');
+    }
+    this.createAnswerbyUserObject(questionID, liste);
     }
 
-  createAnswerbyUserObject(liste?: HTMLElement) {
+  }
+
+  createAnswerbyUserObject(questionID: any, liste?: HTMLElement) {
 
     // Variablen für Antwortobjekt
     let buttonAnswerArray: Array<String> = [];
@@ -256,7 +281,7 @@ export class QuestionComponent implements OnInit {
     }
 
       // Das Antwortenobject zusammenfrickeln...
-      answerTempObj = {id: this.answerByQuestion.id, answers: buttonAnswerArray}
+      answerTempObj = {id: questionID, answers: buttonAnswerArray}
 
       // Prüfen ob überhaupt schon eine Antwort in unserem Array ist
       // Wenn ja, dann durchlaufen wir erstmal jedes element und suchen im Object des elements
@@ -269,7 +294,7 @@ export class QuestionComponent implements OnInit {
 
         let found: Boolean = false;
         this.answersByUser.forEach((el, i) => {
-          if(this.answersByUser[i].id == this.answerByQuestion.id)
+          if(this.answersByUser[i].id == questionID)
           {
             this.answersByUser.splice(i, 1, answerTempObj);
             found = true;
@@ -278,7 +303,7 @@ export class QuestionComponent implements OnInit {
         !found ? this.answersByUser.push(answerTempObj) : false;
 
       }
-      this.vorpruefungQuestionList[this.questionIDForArray].q_answered = true;
+      this.questionList[this.questionIDForArray].q_answered = true;
   }
 
   checkAnswer(index: any, answer: String, isText: Boolean)
@@ -288,15 +313,15 @@ export class QuestionComponent implements OnInit {
 
     if(isText) { index = 0; }
 
-    if(this.answerByQuestion.answers[index] === answer) {
+    if(this.answerList[this.questionIDForArray].answers[index] === answer) {
       btntoChange?.classList.remove('border-warning');
       btntoChange?.classList.add('border-success');
-      btntoChange?.setAttribute('disabled', '');
+      this.modus?.mode !== 'pruefung' ? btntoChange?.setAttribute('disabled', '') : false ;
     }
     else {
       btntoChange?.classList.remove('border-warning');
       btntoChange?.classList.add('border-danger');
-      btntoChange?.setAttribute('disabled', '');
+      this.modus?.mode !== 'pruefung' ? btntoChange?.setAttribute('disabled', '') : false ;
       modalWrongAnswer?.click();
     }
 
@@ -314,7 +339,7 @@ export class QuestionComponent implements OnInit {
       }
 
       this.answersByUser.forEach((el, i) => {
-        if(this.answersByUser[i].id == this.answerByQuestion.id)
+        if(this.answersByUser[i].id == this.answerList[this.questionIDForArray].id)
         {
           this.answersByUser.splice(i, 1);
         }
@@ -329,6 +354,11 @@ export class QuestionComponent implements OnInit {
       this.answerInput = "";
     }
     this.resetButton = false;
-    this.vorpruefungQuestionList[this.questionIDForArray].q_answered = false;
+    this.questionList[this.questionIDForArray].q_answered = false;
   }
+
+  toggleHelp() {
+    return this.showhelp ? this.showhelp = false : this.showhelp = true;
+ }
+
 }
