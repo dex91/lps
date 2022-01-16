@@ -2,7 +2,6 @@ import { Component, OnInit } from '@angular/core';
 import { examValue, Modus } from '../dateninterfaces';
 import { DatabaseMysqlService } from '../database-mysql.service';
 import { ActivatedRoute, Router, NavigationStart, Event } from '@angular/router';
-import { THIS_EXPR } from '@angular/compiler/src/output/output_ast';
 import { Observable } from 'rxjs';
 
 @Component({
@@ -46,6 +45,12 @@ export class SimulateTestComponent implements OnInit {
 
   ngOnInit(): void {
 
+    setInterval(() => {
+      this.examObserver.subscribe(examValues => {
+        this.exam = examValues;
+      });
+    }, 150);
+
   this.route.paramMap.subscribe(nav => {
     this.poolURIName = String(nav.get('poolURIName'));
   });
@@ -55,12 +60,6 @@ export class SimulateTestComponent implements OnInit {
 
     if(this.exam?.warning)
     {
-      setInterval(() => {
-        this.examObserver.subscribe(examValues => {
-          this.exam = examValues;
-        });
-      }, 150);
-
     this.startExam();
     }
     else {
