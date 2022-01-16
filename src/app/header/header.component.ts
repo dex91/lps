@@ -119,6 +119,8 @@ startTimer(duration: any, display: any) {
         if(timer < 6 &&  !timereinheit?.classList.contains('five-seconds-warning')) { timereinheit?.classList.remove('ten-seconds-warning'); timereinheit?.classList.add('five-seconds-warning'); }
 
         // Verhindert, dass der Nutzer "Weitermachen" kann...
+        // (Somit wird verhindert, wenn man trotzdem eine frage weitergeht,
+        // dass der Timer umgangen wird. WASaBUG!!)
         if (timer <= -1)
         {
           clearInterval(timefunc);
