@@ -1,36 +1,36 @@
 <ng-container *ngIf="modus?.lernmodus">
-  <div *ngIf="selectedQuestion" class="col-mb-8">
+  <div *ngIf="questionList.length > 0" class="col-mb-8">
     <div class="card text-left">
-      <div class="card-header text-center">Frage Nr. {{selectedQuestion.id}}</div>
+      <div class="card-header text-center">Frage Nr. {{questionURIid}}</div>
       <div class="card-body">
         <small>F&uuml;r diese Frage gibt es:&nbsp;</small>
-        <span *ngIf="selectedQuestion.q_points < 2" class="badge bg-primary rounded-pill float-right">{{selectedQuestion.q_points}} Punkt</span>
-        <span *ngIf="selectedQuestion.q_points > 1" class="badge bg-primary rounded-pill float-right">{{selectedQuestion.q_points}} Punkte</span>
+        <span *ngIf="questionList[questionIDForArray].q_points < 2" class="badge bg-primary rounded-pill float-right">{{questionList[questionIDForArray].q_points}} Punkt</span>
+        <span *ngIf="questionList[questionIDForArray].q_points > 1" class="badge bg-primary rounded-pill float-right">{{questionList[questionIDForArray].q_points}} Punkte</span>
         <br /><br />
-        <h6 class="card-title" style="white-space:pre-wrap;">{{selectedQuestion.q_title}}</h6>
+        <h6 class="card-title" style="white-space:pre-wrap;">{{questionList[questionIDForArray].q_title}}</h6>
 
-        <ng-container *ngIf="selectedQuestion.q_answer_type == 3">
+        <ng-container *ngIf="questionList[questionIDForArray].q_answer_type == 3">
           <br />
           <p class="font-italic text-justify"><i class="bi bi-mortarboard"></i> Dies ist eine reine Textl&ouml;sung!</p>
           <div class="list-group-item d-flex justify-content-between align-items-center mb-2 border border-success">
-            {{answerByQuestion.answers[0]}}
+            {{answerList[this.questionIDForArray].answers[0]}}
           </div>
           </ng-container>
 
-        <ng-container #singleMultipleAnswers *ngIf="selectedQuestion.q_answer_type == 1 || selectedQuestion.q_answer_type == 2 && answerByQuestion.answers.length > 1">
-          <p *ngIf="selectedQuestion.q_answer_type == 2" class="font-italic text-justify"><i class="bi bi-mortarboard"> Hier sind mehrere Antworten richtig.</i></p>
+        <ng-container #singleMultipleAnswers *ngIf="questionList[questionIDForArray].q_answer_type == 1 || questionList[questionIDForArray].q_answer_type == 2 && answerList[this.questionIDForArray].answers.length > 1">
+          <p *ngIf="questionList[questionIDForArray].q_answer_type == 2" class="font-italic text-justify"><i class="bi bi-mortarboard"> Hier sind mehrere Antworten richtig.</i></p>
         <ul class="list-group list-group-flush">
-          <ng-container *ngFor="let anzeigeAntwort of selectedQuestion.q_answers; index as i">
-            <li *ngIf="answerByQuestion.answers[i] == '1'" class="list-group-item d-flex justify-content-between align-items-center mb-2 border border-success">{{anzeigeAntwort}}</li>
-            <li *ngIf="answerByQuestion.answers[i] == '0'" class="list-group-item d-flex justify-content-between align-items-center mb-2 border border-danger">{{anzeigeAntwort}}</li>
+          <ng-container *ngFor="let anzeigeAntwort of questionList[questionIDForArray].q_answers; index as i">
+            <li *ngIf="answerList[this.questionIDForArray].answers[i] == '1'" class="list-group-item d-flex justify-content-between align-items-center mb-2 border border-success">{{anzeigeAntwort}}</li>
+            <li *ngIf="answerList[this.questionIDForArray].answers[i] == '0'" class="list-group-item d-flex justify-content-between align-items-center mb-2 border border-danger">{{anzeigeAntwort}}</li>
           </ng-container>
         </ul>
       </ng-container>
 
 
       <br /><br />
-      <p class="text-muted small">Diese Frage wurde von {{selectedQuestion.q_createdby}} am {{selectedQuestion.q_created | date : 'EE dd.MM.YYYY' : undefined : 'de_DE'}} zur Datenbank hinzugef&uuml;gt.</p>
-      <p *ngIf="selectedQuestion.q_edited.toString() !== 'Invalid Date'" class="text-muted small">Zuletzt bearbeitet am {{selectedQuestion.q_edited | date : 'EE dd.MM.YYYY' : undefined : 'de_DE'}}</p>
+      <p class="text-muted small">Diese Frage wurde von {{questionList[questionIDForArray].q_createdby}} am {{questionList[questionIDForArray].q_created | date : 'EE dd.MM.YYYY' : undefined : 'de_DE'}} zur Datenbank hinzugef&uuml;gt.</p>
+      <p *ngIf="questionList[questionIDForArray].q_edited.toString() !== 'Invalid Date'" class="text-muted small">Zuletzt bearbeitet am {{questionList[questionIDForArray].q_edited | date : 'EE dd.MM.YYYY' : undefined : 'de_DE'}}</p>
       </div>
     </div>
   </div>
@@ -38,17 +38,17 @@
 
 
 <ng-container *ngIf="modus?.teilpruefung">
-  <div *ngIf="vorpruefungQuestionList.length > 0"class="col-mb-8">
+  <div *ngIf="questionList.length > 0"class="col-mb-8">
     <div class="card text-left">
-      <div class="card-header text-center">Frage Nr. {{vorpruefungQuestionList[questionIDForArray].id}}</div>
+      <div class="card-header text-center">Frage Nr. {{questionList[questionIDForArray].id}}</div>
       <div class="card-body">
         <small>F&uuml;r diese Frage gibt es:&nbsp;</small>
-        <span *ngIf="vorpruefungQuestionList[questionIDForArray].q_points < 2" class="badge bg-primary rounded-pill float-right">{{vorpruefungQuestionList[questionIDForArray].q_points}} Punkt</span>
-        <span *ngIf="vorpruefungQuestionList[questionIDForArray].q_points > 1" class="badge bg-primary rounded-pill float-right">{{vorpruefungQuestionList[questionIDForArray].q_points}} Punkte</span>
+        <span *ngIf="questionList[questionIDForArray].q_points < 2" class="badge bg-primary rounded-pill float-right">{{questionList[questionIDForArray].q_points}} Punkt</span>
+        <span *ngIf="questionList[questionIDForArray].q_points > 1" class="badge bg-primary rounded-pill float-right">{{questionList[questionIDForArray].q_points}} Punkte</span>
         <br /><br />
-        <p *ngIf="vorpruefungQuestionList[questionIDForArray].q_answer_type !== 3" class="font-italic text-justify"><i class="bi bi-mortarboard"> Mehrfachantwort m&ouml;glich!</i></p>
+        <p *ngIf="questionList[questionIDForArray].q_answer_type !== 3" class="font-italic text-justify"><i class="bi bi-mortarboard"> Mehrfachantwort m&ouml;glich!</i></p>
 
-        <ng-container *ngIf="vorpruefungQuestionList[questionIDForArray].q_helptext && !showhelp">
+        <ng-container *ngIf="questionList[questionIDForArray].q_helptext && !showhelp">
           <p class="text-justify align-items-center" style="float: right; margin-left: 16px;">
             <button (click)="toggleHelp();" type="button" class="btn btn-outline-warning btn-sm">
               <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-lightbulb" viewBox="0 0 16 16"><path d="M2 6a6 6 0 1 1 10.174 4.31c-.203.196-.359.4-.453.619l-.762 1.769A.5.5 0 0 1 10.5 13a.5.5 0 0 1 0 1 .5.5 0 0 1 0 1l-.224.447a1 1 0 0 1-.894.553H6.618a1 1 0 0 1-.894-.553L5.5 15a.5.5 0 0 1 0-1 .5.5 0 0 1 0-1 .5.5 0 0 1-.46-.302l-.761-1.77a1.964 1.964 0 0 0-.453-.618A5.984 5.984 0 0 1 2 6zm6-5a5 5 0 0 0-3.479 8.592c.263.254.514.564.676.941L5.83 12h4.342l.632-1.467c.162-.377.413-.687.676-.941A5 5 0 0 0 8 1z"></path></svg>
@@ -57,25 +57,25 @@
           </p>
         </ng-container>
 
-        <ng-container *ngIf="vorpruefungQuestionList[questionIDForArray].q_helptext && showhelp">
+        <ng-container *ngIf="questionList[questionIDForArray].q_helptext && showhelp">
             <ul class="list-group list-group-flush">
               <li class="list-group-item d-flex align-items-left mb-2 border border-warning" (click)="toggleHelp();">
                 <svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" fill="#ffc107" class="bi bi-chat-right-text" viewBox="0 0 16 16">
                   <path d="M2 1a1 1 0 0 0-1 1v8a1 1 0 0 0 1 1h9.586a2 2 0 0 1 1.414.586l2 2V2a1 1 0 0 0-1-1H2zm12-1a2 2 0 0 1 2 2v12.793a.5.5 0 0 1-.854.353l-2.853-2.853a1 1 0 0 0-.707-.293H2a2 2 0 0 1-2-2V2a2 2 0 0 1 2-2h12z"/>
                   <path d="M3 3.5a.5.5 0 0 1 .5-.5h9a.5.5 0 0 1 0 1h-9a.5.5 0 0 1-.5-.5zM3 6a.5.5 0 0 1 .5-.5h9a.5.5 0 0 1 0 1h-9A.5.5 0 0 1 3 6zm0 2.5a.5.5 0 0 1 .5-.5h5a.5.5 0 0 1 0 1h-5a.5.5 0 0 1-.5-.5z"/>
                 </svg>
-                <small style="color: #000000;">&nbsp;&nbsp;Kleiner Tipp:&nbsp;{{vorpruefungQuestionList[questionIDForArray].q_helptext}}</small>
+                <small style="color: #000000;">&nbsp;&nbsp;Kleiner Tipp:&nbsp;{{questionList[questionIDForArray].q_helptext}}</small>
               </li>
             </ul>
         </ng-container>
 
-        <h6 class="card-title" style="white-space:pre-wrap;">{{vorpruefungQuestionList[questionIDForArray].q_title}}</h6>
+        <h6 class="card-title" style="white-space:pre-wrap;">{{questionList[questionIDForArray].q_title}}</h6>
 
-        <ng-container *ngIf="vorpruefungQuestionList[questionIDForArray].q_answer_type == 3">
+        <ng-container *ngIf="questionList[questionIDForArray].q_answer_type == 3">
           <br />
           <p class="font-italic text-justify"><i class="bi bi-mortarboard"></i> Bitte gebe die L&ouml;sung in das Feld ein</p>
           <div class="d-flex justify-content-center">
-            <div class="p-2"><input #answerInputElement [(ngModel)]="answerInput" id="answerButton_{{vorpruefungQuestionList[questionIDForArray].id}}" type="text" name="textanswer-{{vorpruefungQuestionList[questionIDForArray].id}}" class="form-control form-control-sm" placeholder="Deine Antwort"></div>
+            <div class="p-2"><input #answerInputElement [(ngModel)]="answerInput" id="answerButton_{{questionList[questionIDForArray].id}}" type="text" name="textanswer-{{questionList[questionIDForArray].id}}" class="form-control form-control-sm" placeholder="Deine Antwort"></div>
             <div class="p-2">
               <button *ngIf="resetButton else absendeButton" (click)="resetQuestion(answerInputElement, false)" type="button" class="btn btn-outline-danger btn-sm">
                 <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-arrow-counterclockwise" viewBox="0 0 16 16">
@@ -85,7 +85,7 @@
                 Frage Zur&uuml;cksetzen
               </button>
               <ng-template #absendeButton>
-              <button #absendeButton (click)="selectAnswer(answerInputElement, vorpruefungQuestionList[questionIDForArray].id, 'teilpruefung');" type="submit" class="btn btn-outline-primary btn-sm">
+              <button #absendeButton (click)="selectAnswer(answerInputElement, questionList[questionIDForArray].id, questionList[questionIDForArray].id);" type="submit" class="btn btn-outline-primary btn-sm">
                 <svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" fill="currentColor" class="bi bi-arrow-right-square" viewBox="0 0 16 16">
                   <path fill-rule="evenodd" d="M15 2a1 1 0 0 0-1-1H2a1 1 0 0 0-1 1v12a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1V2zM0 2a2 2 0 0 1 2-2h12a2 2 0 0 1 2 2v12a2 2 0 0 1-2 2H2a2 2 0 0 1-2-2V2zm4.5 5.5a.5.5 0 0 0 0 1h5.793l-2.147 2.146a.5.5 0 0 0 .708.708l3-3a.5.5 0 0 0 0-.708l-3-3a.5.5 0 1 0-.708.708L10.293 7.5H4.5z"/>
                 </svg>
@@ -95,10 +95,10 @@
             </div>
           </ng-container>
 
-        <ng-container #singleMultipleAnswers *ngIf="vorpruefungQuestionList[questionIDForArray].q_answer_type == 1 || vorpruefungQuestionList[questionIDForArray].q_answer_type == 2">
+        <ng-container #singleMultipleAnswers *ngIf="questionList[questionIDForArray].q_answer_type == 1 || questionList[questionIDForArray].q_answer_type == 2">
         <ul #Auswahlliste id="auswahlliste" class="list-group list-group-flush">
-          <ng-container *ngFor="let anzeigeAntwort of vorpruefungQuestionList[questionIDForArray].q_answers; index as i">
-            <button #btnAnswer id="answerButton_{{i}}" (click)="selectAnswer(btnAnswer, i, 'teilpruefung', Auswahlliste)" class="list-group-item d-flex justify-content-between align-items-center mb-2 border" disabled>{{anzeigeAntwort}}</button>
+          <ng-container *ngFor="let anzeigeAntwort of questionList[questionIDForArray].q_answers; index as i">
+            <button #btnAnswer id="answerButton_{{i}}" (click)="selectAnswer(btnAnswer, i, questionList[questionIDForArray].id, Auswahlliste)" class="list-group-item d-flex justify-content-between align-items-center mb-2 border" disabled>{{anzeigeAntwort}}</button>
           </ng-container>
         </ul>
         <button *ngIf="resetButton" (click)="resetQuestion(Auswahlliste, true)" type="button" class="btn btn-outline-danger btn-sm align-items-center">
@@ -137,18 +137,18 @@
 
 
 <ng-container *ngIf="modus?.pruefungsmodus">
-  <div *ngIf="vorpruefungQuestionList.length > 0"class="col-mb-8">
+  <div *ngIf="questionList.length > 0"class="col-mb-8">
     <div class="card text-left">
-      <div class="card-header text-center">Frage Nr. {{questionIDForArray+1}} von {{vorpruefungQuestionList.length}}</div>
+      <div class="card-header text-center">Frage Nr. {{questionIDForArray+1}} von {{questionList.length}}</div>
       <div class="card-body">
 
-        <h6 class="card-title" style="white-space: pre-wrap; margin-bottom: 3%; margin-top: 3%; text-align: center;">{{vorpruefungQuestionList[questionIDForArray].q_title}}</h6>
+        <h6 class="card-title" style="white-space: pre-wrap; margin-bottom: 3%; margin-top: 3%; text-align: center;">{{questionList[questionIDForArray].q_title}}</h6>
 
-        <ng-container *ngIf="vorpruefungQuestionList[questionIDForArray].q_answer_type == 3">
+        <ng-container *ngIf="questionList[questionIDForArray].q_answer_type == 3">
           <div class="d-flex justify-content-center">
             <div class="p-2">
               <p class="font-italic text-justify"><i class="bi bi-mortarboard"></i> Bitte gebe die L&ouml;sung in das Feld ein</p>
-              <input #answerInputElement [(ngModel)]="answerInput" id="answerButton_{{vorpruefungQuestionList[questionIDForArray].id}}" type="text" name="textanswer-{{vorpruefungQuestionList[questionIDForArray].id}}" class="form-control form-control-sm" placeholder="Deine Antwort">
+              <input #answerInputElement [(ngModel)]="answerInput" (input)="selectAnswer(answerInputElement, 0, questionList[questionIDForArray].id)" id="answerButton_{{questionList[questionIDForArray].id}}" type="text" name="textanswer-{{questionList[questionIDForArray].id}}" class="form-control form-control-sm" placeholder="Deine Antwort">
             </div>
           </div>
           <div class="d-flex justify-content-center">
@@ -162,16 +162,16 @@
             </div>
 
             <div class="p-2">
-              <button type="button" (click)="selectAnswer(answerInputElement, vorpruefungQuestionList[questionIDForArray].id, 'pruefung');" type="submit" class="btn btn-primary btn-sm">
+              <button id="frageEinreichen_{{this.questionList[this.questionIDForArray].id}}" type="button" type="submit" class="btn btn-primary btn-sm" disabled>
                 <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-folder-symlink" viewBox="0 0 16 16">
                   <path d="m11.798 8.271-3.182 1.97c-.27.166-.616-.036-.616-.372V9.1s-2.571-.3-4 2.4c.571-4.8 3.143-4.8 4-4.8v-.769c0-.336.346-.538.616-.371l3.182 1.969c.27.166.27.576 0 .742z"/>
                   <path d="m.5 3 .04.87a1.99 1.99 0 0 0-.342 1.311l.637 7A2 2 0 0 0 2.826 14h10.348a2 2 0 0 0 1.991-1.819l.637-7A2 2 0 0 0 13.81 3H9.828a2 2 0 0 1-1.414-.586l-.828-.828A2 2 0 0 0 6.172 1H2.5a2 2 0 0 0-2 2zm.694 2.09A1 1 0 0 1 2.19 4h11.62a1 1 0 0 1 .996 1.09l-.636 7a1 1 0 0 1-.996.91H2.826a1 1 0 0 1-.995-.91l-.637-7zM6.172 2a1 1 0 0 1 .707.293L7.586 3H2.19c-.24 0-.47.042-.683.12L1.5 2.98a1 1 0 0 1 1-.98h3.672z"/>
                 </svg>
-                Frage abgeben
+                Frage einreichen
               </button>
             </div>
 
-            <div *ngIf="questionURIid !== vorpruefungQuestionList.length" class="p-2">
+            <div *ngIf="questionURIid !== questionList.length" class="p-2">
             <button type="button" (click)="loadPruefungsQuestion(true);" class="btn btn-secondary btn-sm">
               N&auml;chste Frage
               <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-arrow-right-square" viewBox="0 0 16 16">
@@ -182,10 +182,10 @@
           </div>
           </ng-container>
 
-        <ng-container #singleMultipleAnswers *ngIf="vorpruefungQuestionList[questionIDForArray].q_answer_type == 1 || vorpruefungQuestionList[questionIDForArray].q_answer_type == 2">
+        <ng-container #singleMultipleAnswers *ngIf="questionList[questionIDForArray].q_answer_type == 1 || questionList[questionIDForArray].q_answer_type == 2">
         <ul #Auswahlliste id="auswahlliste" class="list-group list-group-flush">
-          <ng-container *ngFor="let anzeigeAntwort of vorpruefungQuestionList[questionIDForArray].q_answers; index as i">
-            <button #btnAnswer id="answerButton_{{i}}" (click)="selectAnswer(btnAnswer, i, 'pruefung', Auswahlliste)" class="list-group-item d-flex justify-content-between align-items-center mb-2 border">{{anzeigeAntwort}}</button>
+          <ng-container *ngFor="let anzeigeAntwort of questionList[questionIDForArray].q_answers; index as i">
+            <button #btnAnswer_exam id="answerButton_{{questionList[questionIDForArray].id}}_{{i}}" (click)="selectAnswer(btnAnswer_exam, i, questionList[questionIDForArray].id, Auswahlliste)" class="list-group-item d-flex justify-content-between align-items-center mb-2 border">{{anzeigeAntwort}}</button>
           </ng-container>
         </ul>
         <div class="d-flex justify-content-center mt-3">
@@ -199,16 +199,16 @@
           </div>
 
           <div class="p-2">
-            <button #buttonAbsenden type="button" (click)="selectAnswer(buttonAbsenden, vorpruefungQuestionList[questionIDForArray].id, 'pruefung');" type="submit" class="btn btn-primary btn-sm">
+            <button id="frageEinreichen_{{this.questionList[this.questionIDForArray].id}}" type="button" type="submit" class="btn btn-primary btn-sm" disabled>
               <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-folder-symlink" viewBox="0 0 16 16">
                 <path d="m11.798 8.271-3.182 1.97c-.27.166-.616-.036-.616-.372V9.1s-2.571-.3-4 2.4c.571-4.8 3.143-4.8 4-4.8v-.769c0-.336.346-.538.616-.371l3.182 1.969c.27.166.27.576 0 .742z"/>
                 <path d="m.5 3 .04.87a1.99 1.99 0 0 0-.342 1.311l.637 7A2 2 0 0 0 2.826 14h10.348a2 2 0 0 0 1.991-1.819l.637-7A2 2 0 0 0 13.81 3H9.828a2 2 0 0 1-1.414-.586l-.828-.828A2 2 0 0 0 6.172 1H2.5a2 2 0 0 0-2 2zm.694 2.09A1 1 0 0 1 2.19 4h11.62a1 1 0 0 1 .996 1.09l-.636 7a1 1 0 0 1-.996.91H2.826a1 1 0 0 1-.995-.91l-.637-7zM6.172 2a1 1 0 0 1 .707.293L7.586 3H2.19c-.24 0-.47.042-.683.12L1.5 2.98a1 1 0 0 1 1-.98h3.672z"/>
               </svg>
-              Frage abgeben
+              Frage einreichen
             </button>
           </div>
 
-          <div *ngIf="questionURIid !== vorpruefungQuestionList.length" class="p-2">
+          <div *ngIf="questionURIid !== questionList.length" class="p-2">
           <button #buttonForward type="button" (click)="loadPruefungsQuestion(true);" class="btn btn-secondary btn-sm">
             N&auml;chste Frage
             <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-arrow-right-square" viewBox="0 0 16 16">
