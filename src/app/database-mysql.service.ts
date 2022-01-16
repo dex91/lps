@@ -37,15 +37,9 @@ export class DatabaseMysqlService {
       );
   }
 
-  APIgetQuestionById(id: Number): Observable<Question> {
-    return this.apiClient.get<QuestionRAW>(`${this.apiRoot}/getQuestionById?id=${id}`).pipe(
-      retry(3),
-      map(question => formatDateninterfaces.formatQuestion(question)),
-    );
-  }
+  APIgetAnswersByPoolId(id: Number): Observable<Answer[]> {
 
-  APIgetAnswerById(id: Number): Observable<Answer> {
-    return this.apiClient.get<Answer>(`${this.apiRoot}/getAnswerById?id=${id}`);
+    return this.apiClient.get<Answer[]>(`${this.apiRoot}/getAnswersByPoolId?poolId=${id}`);
   }
 
   APIgetPruefungsQuestionsByPoolId(id: Number, questionSize: Number): Observable<Question[]> {
