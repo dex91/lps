@@ -31,7 +31,6 @@
       <div *ngIf="examProgress < 100 && !exam?.examFailed && !pause" class="progress-bar progress-bar-striped progress-bar-animated" role="progressbar" [style.width.%]="examProgress">{{examProgress}}% Bearbeitet</div>
       <div *ngIf="examProgress >= 100 && !exam?.examFailed && !pause" class="progress-bar progress-bar-striped progress-bar-animated bg-success" role="progressbar" [style.width.%]="100">Alle Fragen wurden bearbeitet</div>
       <div *ngIf="exam?.examFailed" class="progress-bar progress-bar-striped progress-bar-animated bg-danger" role="progressbar" [style.width.%]="100">Pr&uuml;fung abgebrochen</div>
-      <div *ngIf="examProgress >= 100 && !exam?.examFailed && exam.examDone" class="progress-bar progress-bar-striped progress-bar-animated bg-success" role="progressbar" [style.width.%]="100">Alle Fragen wurden bearbeitet</div>
     </div>
 
       <nav *ngIf="exam?.examStarted && !exam?.examFailed && !exam?.examDone && examProgress < 100" class="align-self-end">

@@ -140,7 +140,7 @@
   <div *ngIf="questionList.length > 0"class="col-mb-8">
     <div class="card text-left">
       <div class="card-header text-center">Frage Nr. {{questionIDForArray+1}} von {{questionList.length}}</div>
-      <div class="card-body">
+      <div *ngIf="!this.questionList[this.questionIDForArray].q_answered else answeredQuestion" class="card-body">
 
         <h6 class="card-title" style="white-space: pre-wrap; margin-bottom: 3%; margin-top: 3%; text-align: center;">{{questionList[questionIDForArray].q_title}}</h6>
 
@@ -217,9 +217,50 @@
           </button>
         </div>
         </div>
+
+
       </ng-container>
 
       </div>
     </div>
   </div>
+
+  <ng-template #answeredQuestion>
+    <div class="card-body">
+
+      <h6 class="card-title" style="white-space: pre-wrap; margin-bottom: 3%; margin-top: 3%; text-align: center;">Diese Frage haben Sie bereits beantwortet =)</h6>
+
+
+      <div class="d-flex justify-content-center mt-3">
+        <div *ngIf="questionURIid > 1" class="p-2">
+          <button #buttonBack type="button" (click)="loadPruefungsQuestion(false);" class="btn btn-secondary btn-sm">
+            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-arrow-left-square" viewBox="0 0 16 16">
+              <path fill-rule="evenodd" d="M15 2a1 1 0 0 0-1-1H2a1 1 0 0 0-1 1v12a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1V2zM0 2a2 2 0 0 1 2-2h12a2 2 0 0 1 2 2v12a2 2 0 0 1-2 2H2a2 2 0 0 1-2-2V2zm11.5 5.5a.5.5 0 0 1 0 1H5.707l2.147 2.146a.5.5 0 0 1-.708.708l-3-3a.5.5 0 0 1 0-.708l3-3a.5.5 0 1 1 .708.708L5.707 7.5H11.5z"/>
+            </svg>
+            Frage zur&uuml;ck
+          </button>
+        </div>
+
+        <div class="p-2">
+          <button type="button" type="submit" class="btn btn-primary btn-sm" disabled>
+            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-folder-symlink" viewBox="0 0 16 16">
+              <path d="m11.798 8.271-3.182 1.97c-.27.166-.616-.036-.616-.372V9.1s-2.571-.3-4 2.4c.571-4.8 3.143-4.8 4-4.8v-.769c0-.336.346-.538.616-.371l3.182 1.969c.27.166.27.576 0 .742z"/>
+              <path d="m.5 3 .04.87a1.99 1.99 0 0 0-.342 1.311l.637 7A2 2 0 0 0 2.826 14h10.348a2 2 0 0 0 1.991-1.819l.637-7A2 2 0 0 0 13.81 3H9.828a2 2 0 0 1-1.414-.586l-.828-.828A2 2 0 0 0 6.172 1H2.5a2 2 0 0 0-2 2zm.694 2.09A1 1 0 0 1 2.19 4h11.62a1 1 0 0 1 .996 1.09l-.636 7a1 1 0 0 1-.996.91H2.826a1 1 0 0 1-.995-.91l-.637-7zM6.172 2a1 1 0 0 1 .707.293L7.586 3H2.19c-.24 0-.47.042-.683.12L1.5 2.98a1 1 0 0 1 1-.98h3.672z"/>
+            </svg>
+            Frage einreichen
+          </button>
+        </div>
+
+        <div *ngIf="questionURIid !== questionList.length" class="p-2">
+        <button #buttonForward type="button" (click)="loadPruefungsQuestion(true);" class="btn btn-secondary btn-sm">
+          N&auml;chste Frage
+          <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-arrow-right-square" viewBox="0 0 16 16">
+            <path fill-rule="evenodd" d="M15 2a1 1 0 0 0-1-1H2a1 1 0 0 0-1 1v12a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1V2zM0 2a2 2 0 0 1 2-2h12a2 2 0 0 1 2 2v12a2 2 0 0 1-2 2H2a2 2 0 0 1-2-2V2zm4.5 5.5a.5.5 0 0 0 0 1h5.793l-2.147 2.146a.5.5 0 0 0 .708.708l3-3a.5.5 0 0 0 0-.708l-3-3a.5.5 0 1 0-.708.708L10.293 7.5H4.5z"></path>
+          </svg>
+        </button>
+      </div>
+      </div>
+    </div>
+  </ng-template>
+
 </ng-container>

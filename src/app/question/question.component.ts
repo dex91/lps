@@ -25,11 +25,14 @@ export class QuestionComponent implements OnInit {
   resetButton: Boolean = false;
   answersByUser: Answer[] = [];
   questionIDForArray: any;
+
+  // Zahlreiche zählvariablen
   counterofGivenAnswers = 0;
   counterofRightAnswersAavailable = 0;
-
   counterRightQuestions: number = 0;
   counterFailedQuestions: number = 0;
+  examProgress: number = 0;
+  examFailedQuestions: number = 0;
 
 
   examObserver: Observable<examValue> = new Observable(observer => {
@@ -57,25 +60,32 @@ export class QuestionComponent implements OnInit {
             this.reloadQuestion();
           },250);
 
-          this.counterRightQuestions = parseInt(this.exam?.examRightQuestion?.toString() || '0');
-          this.counterFailedQuestions = parseInt(this.exam?.examFailedQuestion?.toString() || '0');
 
       }
   });
-
   }
 
   ngOnInit(): void {
 
-
-    setInterval(() => {
+    let getData = setInterval(() => {
       this.examObserver.subscribe(examValues => {
-        this.exam = examValues;
-        this.db.setExamValue({...this.exam, examQuestions: this.questionList.length });
+        this.counterRightQuestions = parseInt(this.exam?.examRightQuestion?.toString() || '0');
+        this.counterFailedQuestions = parseInt(this.exam?.examFailedQuestion?.toString() || '0');
+        this.examProgress = parseInt(this.exam?.examProgress?.toString() || '0');
+        this.examFailedQuestions = parseInt(this.exam?.examFailedQuestion?.toString() || '0');
+        this.db.setExamValue(examValues);
+
+        if(this.exam?.examProgress == this.questionList.length) {
+          this.db.setExamValue({...this.exam, examStarted: false, examDone: true});
+          clearInterval(getData);
+        }
+
+
+
+        examValues.exit || examValues.examFailed || examValues.examDone ? clearInterval(getData) : false;
+
       });
-    }, 1000);
-
-
+    }, 50);
 
     this.route.paramMap.subscribe(nav =>{
       this.questionURIid = parseInt(nav.get('questionId') || '0');
@@ -87,7 +97,10 @@ export class QuestionComponent implements OnInit {
     if(this.modus?.pruefungsmodus)
     {
       this.db.APIgetPoolByURIName(this.poolURIName).subscribe(pool => {
-        this.db.APIgetPruefungsQuestionsByPoolId(Number(pool.id), 1).subscribe(qlist => this.questionList = qlist);
+        this.db.APIgetPruefungsQuestionsByPoolId(Number(pool.id), 1).subscribe(qlist => {
+          this.questionList = qlist;
+          this.exam = {...this.exam, examQuestions: qlist.length};
+        });
         this.db.APIgetAnswersByPoolId(Number(pool.id)).subscribe(alist => this.answerList = alist);
       });
     }
@@ -105,7 +118,8 @@ export class QuestionComponent implements OnInit {
      } else {
       this.questionURIid--;
     }
-    this.db.setExamValue({ ...this.exam, examProgress: this.questionURIid});
+
+    //this.db.setExamValue({ ...this.exam, examProgress: this.questionURIid});
 
     this.router.navigate([this.modus?.mode, this.poolURIName, this.questionURIid]);
   }
@@ -312,7 +326,7 @@ export class QuestionComponent implements OnInit {
         !found ? this.answersByUser.push(answerTempObj) : false;
 
       }
-      this.questionList[this.questionIDForArray].q_answered = true;
+      this.modus?.mode !== 'pruefung' ? this.questionList[this.questionIDForArray].q_answered = true : false;
   }
 
   checkAnswer(index: any, answer: String, isText: Boolean)
@@ -342,6 +356,8 @@ export class QuestionComponent implements OnInit {
     let firstarraytocheck: Array<String> = [];
     let secondarraytocheck: Array<String> = [];
     let rightAnswers: number = 0;
+
+    let examValues = this.db.getExamValue();
 
 
     this.answerList.forEach(el =>
@@ -374,15 +390,20 @@ if(el === secondarraytocheck[i])
 if(rightAnswers === firstarraytocheck.length) {
 
 
-  this.db.setExamValue({...this.exam, examRightQuestion: this.counterRightQuestions++ });
+  this.counterRightQuestions++;
+
 
 } else {
 
-  this.db.setExamValue({...this.exam, examFailedQuestion:  this.counterFailedQuestions++ });
+  this.counterFailedQuestions++;
 }
 
-//console.log(this.db.getExamValue());
-console.log(this.exam);
+this.examProgress++
+
+this.exam = {...this.exam, examFailedQuestion: this.counterFailedQuestions, examRightQuestion: this.counterRightQuestions, examProgress: this.examProgress };
+this.db.setExamValue(this.exam);
+
+this.questionList[this.questionIDForArray].q_answered = true;
 
   }
 

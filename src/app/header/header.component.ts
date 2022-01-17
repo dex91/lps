@@ -19,10 +19,8 @@ export class HeaderComponent implements OnInit, AfterViewInit {
   progressBarWidth: Number = 0;
 
   examObserver: Observable<examValue> = new Observable(observer => {
-    setInterval(() => {
     observer.next(this.db.getExamValue());
     observer.complete();
-    },150);
 });
 
   constructor(
@@ -41,30 +39,36 @@ export class HeaderComponent implements OnInit, AfterViewInit {
 
         if (this.router.url.includes('/pruefung')) {
 
-          this.examObserver.subscribe(examValues => {
-            this.exam = examValues;
+          setInterval(() => {
 
-            this.exam.exit ? this.examProgress = 0 : false;
+            this.examObserver.subscribe(examValues => {
+              this.exam = examValues;
 
-            if (this.exam.examStarted) {
-              this.timerTick = this.db.getExamTicker();
 
-              if (!this.timerTick.tick) {
-                setTimeout(() => {
-                  let display = document.querySelector('#zeit');
-                  this.startTimer(this.exam?.examTimer, display);
-                  this.db.setExamTicker({ tick: true });
-                }, 50);
+              this.exam.exit ? this.examProgress = 0 : false;
+
+              if (this.exam.examStarted) {
+                this.timerTick = this.db.getExamTicker();
+
+                if (!this.timerTick.tick) {
+                  setTimeout(() => {
+                    let display = document.querySelector('#zeit');
+                    this.startTimer(this.exam?.examTimer, display);
+                    this.db.setExamTicker({ tick: true });
+                  }, 50);
+                }
+
+                if (this.exam.examQuestions !== undefined && this.exam.examProgress !== undefined) {
+                  this.examProgress = Math.round((this.exam.examProgress * 100) / this.exam.examQuestions);
+                  this.db.setExamValue({ ...this.exam, examProgressPercent: this.examProgress, showProgress: true });
+                }
+
+                this.examProgress >= 100 ? this.progressBarWidth = 74 : this.progressBarWidth = 50;
+
+
               }
-              if (this.exam.examQuestions !== undefined && this.exam.examProgress !== undefined) {
-                this.examProgress = Math.round((this.exam.examProgress * 100) / this.exam.examQuestions);
-                this.db.setExamValue({ ...this.exam, examProgressPercent: this.examProgress, showProgress: true });
-              }
-
-              this.examProgress >= 100 ? this.progressBarWidth = 74 : this.progressBarWidth = 50;
-
-            }
-          });
+            });
+          },150);
         }
       }
     });
@@ -118,7 +122,8 @@ startTimer(duration: any, display: any) {
         if(timer < 11 && timer > 5 && !timereinheit?.classList.contains('ten-seconds-warning')) { timereinheit?.classList.add('ten-seconds-warning'); }
         if(timer < 6 &&  !timereinheit?.classList.contains('five-seconds-warning')) { timereinheit?.classList.remove('ten-seconds-warning'); timereinheit?.classList.add('five-seconds-warning'); }
 
-        // Verhindert, dass der Nutzer "Weitermachen" kann...
+
+// Verhindert, dass der Nutzer "Weitermachen" kann...
         // (Somit wird verhindert, wenn man trotzdem eine frage weitergeht,
         // dass der Timer umgangen wird. WASaBUG!!)
         if (timer <= -1)
@@ -154,6 +159,16 @@ startTimer(duration: any, display: any) {
           timereinheit?.classList.add('just-green');
           clearInterval(timefunc);
         }
+
+        if(parseInt(this.exam.examFailedQuestion?.toString() || '0') >= 1)
+        {
+          this.cancelExam(3);
+          timereinheit?.classList.remove('five-seconds-warning');
+          timereinheit?.classList.add('ten-seconds-warning');
+          this.progressBarWidth = 74;
+          clearInterval(timefunc);
+        }
+
 
         display ? display.textContent = minutes + ":" + seconds : false;
 

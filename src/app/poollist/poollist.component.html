@@ -22,11 +22,11 @@
       </ul>
     </div>
 
-    <div *ngIf="modus?.mode == 'pruefung'" class="card d-flex justify-content-center h-100">
+    <div *ngIf="modus?.mode == 'pruefung'" class="card">
       <div class="card-header">Bitte wähle einen Fragenkatalog aus</div>
-      <ul #auswahl class="list-group d-flex justify-content-center list-group-flush">
+      <ul #auswahl class="list-group list-group-flush">
         <ng-container *ngFor="let pool of pools">
-          <a id="{{pool.id}}" (click)="selectPool(pool.poolURIName || '', auswahl, pool.id || 0);" role="button" class="mb-1 h6 text-decoration-none list-group-item d-flex justify-content-between align-items-center">
+          <a id="{{pool.id}}" (click)="selectPool(pool.poolURIName || '', auswahl, pool.id || 0);" role="button" class="mb-0 h6 text-decoration-none list-group-item d-flex justify-content-between align-items-center">
             {{pool.poolName}}
           </a>
       </ng-container>

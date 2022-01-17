@@ -19,6 +19,7 @@ export class SimulateTestComponent implements OnInit {
 
   examObserver: Observable<examValue> = new Observable(observer => {
     observer.next(this.db.getExamValue());
+    observer.next(this.db.getExamValue());
     observer.complete();
 });
 
@@ -48,6 +49,8 @@ export class SimulateTestComponent implements OnInit {
     setInterval(() => {
       this.examObserver.subscribe(examValues => {
         this.exam = examValues;
+
+        //console.log(examValues);
       });
     }, 150);
 
@@ -63,7 +66,7 @@ export class SimulateTestComponent implements OnInit {
     this.startExam();
     }
     else {
-      this.router.navigate(['pruefung']);
+      this.router.navigate([this.modus?.mode]);
     }
   }
 
@@ -76,7 +79,7 @@ export class SimulateTestComponent implements OnInit {
 
   startExam() {
     //this.exam = { examStarted: true, examTimer: 300, examProgress: 50, examFailed: false, examFailedQuestion: 0, examRightQuestion: 0, warning: true }
-    this.exam = { ...this.exam , examStarted: true, examTimer: 1801, examProgressPercent: 0, examFailedQuestion: 0, examRightQuestion: 0, showProgress: true }
+    this.exam = { ...this.exam , examStarted: true, examTimer: 1801, examProgressPercent: 0, showProgress: true }
     this.db.setExamValue(this.exam);
     this.router.navigate([this.modus?.mode, this.poolURIName, 1]);
   }
