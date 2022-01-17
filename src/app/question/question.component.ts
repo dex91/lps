@@ -28,6 +28,9 @@ export class QuestionComponent implements OnInit {
   counterofGivenAnswers = 0;
   counterofRightAnswersAavailable = 0;
 
+  counterRightQuestions: number = 0;
+  counterFailedQuestions: number = 0;
+
 
   examObserver: Observable<examValue> = new Observable(observer => {
     observer.next(this.db.getExamValue());
@@ -54,6 +57,9 @@ export class QuestionComponent implements OnInit {
             this.reloadQuestion();
           },250);
 
+          this.counterRightQuestions = parseInt(this.exam?.examRightQuestion?.toString() || '0');
+          this.counterFailedQuestions = parseInt(this.exam?.examFailedQuestion?.toString() || '0');
+
       }
   });
 
@@ -61,12 +67,15 @@ export class QuestionComponent implements OnInit {
 
   ngOnInit(): void {
 
+
     setInterval(() => {
       this.examObserver.subscribe(examValues => {
         this.exam = examValues;
         this.db.setExamValue({...this.exam, examQuestions: this.questionList.length });
       });
-    }, 150);
+    }, 1000);
+
+
 
     this.route.paramMap.subscribe(nav =>{
       this.questionURIid = parseInt(nav.get('questionId') || '0');
@@ -326,6 +335,55 @@ export class QuestionComponent implements OnInit {
     }
 
     this.resetButton = true;
+  }
+
+  checkExamAnswer(checkExamQuestionId: Number){
+
+    let firstarraytocheck: Array<String> = [];
+    let secondarraytocheck: Array<String> = [];
+    let rightAnswers: number = 0;
+
+
+    this.answerList.forEach(el =>
+    {
+      if(el.id == checkExamQuestionId)
+      {
+        firstarraytocheck = el.answers;
+      }
+
+    });
+
+    this.answersByUser.forEach(el =>
+    {
+      if(el.id == checkExamQuestionId)
+      {
+        secondarraytocheck = el.answers;
+      }
+
+    });
+
+firstarraytocheck.forEach((el, i) => {
+
+if(el === secondarraytocheck[i])
+{
+  rightAnswers++;
+}
+
+});
+
+if(rightAnswers === firstarraytocheck.length) {
+
+
+  this.db.setExamValue({...this.exam, examRightQuestion: this.counterRightQuestions++ });
+
+} else {
+
+  this.db.setExamValue({...this.exam, examFailedQuestion:  this.counterFailedQuestions++ });
+}
+
+//console.log(this.db.getExamValue());
+console.log(this.exam);
+
   }
 
   resetQuestion(element: HTMLElement, isMultiple: Boolean){
