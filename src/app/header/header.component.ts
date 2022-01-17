@@ -160,7 +160,7 @@ startTimer(duration: any, display: any) {
           clearInterval(timefunc);
         }
 
-        if(parseInt(this.exam.examFailedQuestion?.toString() || '0') >= 1)
+        if(parseInt(this.exam.examFailedQuestion?.toString() || '0') >= 8)
         {
           this.cancelExam(3);
           timereinheit?.classList.remove('five-seconds-warning');

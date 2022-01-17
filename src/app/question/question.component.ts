@@ -97,7 +97,7 @@ export class QuestionComponent implements OnInit {
     if(this.modus?.pruefungsmodus)
     {
       this.db.APIgetPoolByURIName(this.poolURIName).subscribe(pool => {
-        this.db.APIgetPruefungsQuestionsByPoolId(Number(pool.id), 1).subscribe(qlist => {
+        this.db.APIgetPruefungsQuestionsByPoolId(Number(pool.id), 8).subscribe(qlist => {
           this.questionList = qlist;
           this.exam = {...this.exam, examQuestions: qlist.length};
         });
@@ -138,7 +138,10 @@ export class QuestionComponent implements OnInit {
         liste.children[i].classList.remove('border-warning');
         liste.children[i].classList.remove('border-danger');
         liste.children[i].classList.remove('border-success');
-        liste.children[i].removeAttribute('disabled');
+        if(this.questionList[this.questionIDForArray].q_answered && this.modus?.mode !== 'pruefung')
+        {
+          liste.children[i].setAttribute('disabled', '');
+        } else { liste.children[i].removeAttribute('disabled'); }
       }
     }
 
@@ -155,7 +158,7 @@ export class QuestionComponent implements OnInit {
 
             if(this.questionList[this.questionIDForArray].q_answer_type === 3)
             {
-              this.checkAnswer(this.questionList[this.questionIDForArray].id, this.answersByUser[i].answers[0], true);
+              this.checkAnswer(this.questionList[this.questionIDForArray].id, this.answersByUser[i].answers[0], true, true);
               this.answerInput = this.answersByUser[i].answers[0];
             }
             else {
@@ -163,7 +166,7 @@ export class QuestionComponent implements OnInit {
               {
                 if(this.answersByUser[i].answers[y] == '1')
                 {
-                  this.checkAnswer(y, this.answersByUser[i].answers[y], false);
+                  this.checkAnswer(y, this.answersByUser[i].answers[y], false, true);
                 }
 
               });
@@ -329,81 +332,63 @@ export class QuestionComponent implements OnInit {
       this.modus?.mode !== 'pruefung' ? this.questionList[this.questionIDForArray].q_answered = true : false;
   }
 
-  checkAnswer(index: any, answer: String, isText: Boolean)
+  checkAnswer(index: any, answer: String, isText: Boolean, reloaded?: Boolean)
   {
     let btntoChange = document.getElementById(`answerButton_${index}`);
     let modalWrongAnswer = document.getElementById('triggerUser');
+    let modalWrongAnswers = document.getElementById('triggerUserByReload');
 
     if(isText) { index = 0; }
 
     if(this.answerList[this.questionIDForArray].answers[index] === answer) {
       btntoChange?.classList.remove('border-warning');
       btntoChange?.classList.add('border-success');
-      this.modus?.mode !== 'pruefung' ? btntoChange?.setAttribute('disabled', '') : false ;
+      btntoChange?.setAttribute('disabled', '');
     }
     else {
       btntoChange?.classList.remove('border-warning');
       btntoChange?.classList.add('border-danger');
-      this.modus?.mode !== 'pruefung' ? btntoChange?.setAttribute('disabled', '') : false ;
-      modalWrongAnswer?.click();
+      btntoChange?.setAttribute('disabled', '');
+      !reloaded ? modalWrongAnswer?.click() : modalWrongAnswers?.click()
     }
 
     this.resetButton = true;
   }
 
-  checkExamAnswer(checkExamQuestionId: Number){
+  checkExamAnswer(checkExamQuestionId: Number) {
 
     let firstarraytocheck: Array<String> = [];
     let secondarraytocheck: Array<String> = [];
     let rightAnswers: number = 0;
 
-    let examValues = this.db.getExamValue();
-
-
-    this.answerList.forEach(el =>
-    {
-      if(el.id == checkExamQuestionId)
-      {
+    this.answerList.forEach(el => {
+      if (el.id == checkExamQuestionId) {
         firstarraytocheck = el.answers;
       }
-
     });
 
-    this.answersByUser.forEach(el =>
-    {
-      if(el.id == checkExamQuestionId)
-      {
+    this.answersByUser.forEach(el => {
+      if (el.id == checkExamQuestionId) {
         secondarraytocheck = el.answers;
       }
-
     });
 
-firstarraytocheck.forEach((el, i) => {
+    firstarraytocheck.forEach((el, i) => {
+      if (el === secondarraytocheck[i]) {
+        rightAnswers++;
+      }
+    });
 
-if(el === secondarraytocheck[i])
-{
-  rightAnswers++;
-}
+    if (rightAnswers === firstarraytocheck.length) {
+      this.counterRightQuestions++;
+    } else {
+      this.counterFailedQuestions++;
+    }
 
-});
-
-if(rightAnswers === firstarraytocheck.length) {
-
-
-  this.counterRightQuestions++;
-
-
-} else {
-
-  this.counterFailedQuestions++;
-}
-
-this.examProgress++
-
-this.exam = {...this.exam, examFailedQuestion: this.counterFailedQuestions, examRightQuestion: this.counterRightQuestions, examProgress: this.examProgress };
-this.db.setExamValue(this.exam);
-
-this.questionList[this.questionIDForArray].q_answered = true;
+    this.examProgress++
+    this.exam = { ...this.exam, examFailedQuestion: this.counterFailedQuestions, examRightQuestion: this.counterRightQuestions, examProgress: this.examProgress };
+    this.db.setExamValue(this.exam);
+    this.questionList[this.questionIDForArray].q_answered = true;
 
   }
 

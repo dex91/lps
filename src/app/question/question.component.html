@@ -98,7 +98,7 @@
         <ng-container #singleMultipleAnswers *ngIf="questionList[questionIDForArray].q_answer_type == 1 || questionList[questionIDForArray].q_answer_type == 2">
         <ul #Auswahlliste id="auswahlliste" class="list-group list-group-flush">
           <ng-container *ngFor="let anzeigeAntwort of questionList[questionIDForArray].q_answers; index as i">
-            <button #btnAnswer id="answerButton_{{i}}" (click)="selectAnswer(btnAnswer, i, questionList[questionIDForArray].id, Auswahlliste)" class="list-group-item d-flex justify-content-between align-items-center mb-2 border" disabled>{{anzeigeAntwort}}</button>
+            <button #btnAnswer id="answerButton_{{i}}" (click)="selectAnswer(btnAnswer, i, questionList[questionIDForArray].id, Auswahlliste)" class="list-group-item d-flex justify-content-between align-items-center mb-2 border">{{anzeigeAntwort}}</button>
           </ng-container>
         </ul>
         <button *ngIf="resetButton" (click)="resetQuestion(Auswahlliste, true)" type="button" class="btn btn-outline-danger btn-sm align-items-center">
@@ -114,10 +114,11 @@
     </div>
   </div>
 
-<!-- Button trigger modal -->
+<!-- Buttons zum triggern -->
 <button type="button" id="triggerUser" class="btn btn-primary" data-toggle="modal" data-target="#wrongAnswer" hidden>CLICKMICH</button>
+<button type="button" id="triggerUserByReload" class="btn btn-primary" data-toggle="modal" data-target="#wrongAnswerOnreload" hidden>CLICKMICH</button>
 
-<!-- Modal -->
+<!-- Modal so lange man in der Frage ist -->
 <div class="modal fade" id="wrongAnswer" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
   <div class="modal-dialog modal-dialog-centered" role="document">
     <div class="modal-content">
@@ -126,6 +127,23 @@
       </div>
       <div class="modal-body">
         Diese Antwort ist leider nicht korrekt!
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-primary" data-dismiss="modal">Schlie&szlig;en</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Modal für das wieder laden -->
+<div class="modal fade" id="wrongAnswerOnreload" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="exampleModalLongTitle">Whoops!</h5>
+      </div>
+      <div class="modal-body">
+        Hier sind eine oder mehrere Antworten nicht richtig!
       </div>
       <div class="modal-footer">
         <button type="button" class="btn btn-primary" data-dismiss="modal">Schlie&szlig;en</button>
