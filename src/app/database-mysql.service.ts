@@ -68,10 +68,12 @@ export class DatabaseMysqlService {
   }
 
   // Getter sowie Setter für die Prüfungssimulation. Und weitere Funktionen
-  exitExam() {
+  exitExam(backToLearning?: Boolean) {
+    let navigate: String = '';
     this.exam = {exit: true, warning: false};
     this.setExamTicker({tick: false});
-    this.router.navigate(['pruefung']);
+    backToLearning ? navigate = 'learning' : navigate = 'pruefung';
+    this.router.navigate([navigate]);
   }
 
   setExamValue(modeObj: examValue) {

@@ -81,8 +81,8 @@ export class SimulateTestComponent implements OnInit {
     this.router.navigate([this.modus?.mode, this.poolURIName, 1]);
   }
 
-  exitExam() {
-    this.db.exitExam();
+  exitExam(backToLearning: Boolean) {
+    this.db.exitExam(backToLearning);
   }
 
 }
