@@ -1,4 +1,4 @@
-import { Component, OnInit, AfterViewInit} from '@angular/core';
+import { Component, AfterViewInit} from '@angular/core';
 import { NavigationEnd, Event, Router, NavigationStart } from '@angular/router';
 import { DatabaseMysqlService } from '../database-mysql.service';
 import { examValue, examTimer, Modus } from '../dateninterfaces';
@@ -10,7 +10,7 @@ import { Observable } from 'rxjs';
   styleUrls: ['./header.component.css']
 })
 
-export class HeaderComponent implements OnInit, AfterViewInit {
+export class HeaderComponent implements AfterViewInit {
   modus?: Modus;
   pause: Boolean = false;
   timerTick?: examTimer;
@@ -23,6 +23,12 @@ export class HeaderComponent implements OnInit, AfterViewInit {
     observer.complete();
 });
 
+  /**
+   * Initialisiert Klassen die wir benötigen und bestückt sofern angegeben
+   * Variablen mit defaultwerten oder werten aus dem service.
+   * @param router Stellt das Routing bereit
+   * @param db Stellt unseren Service bereit
+   */
   constructor(
     public router: Router,
     private db: DatabaseMysqlService,
@@ -30,8 +36,13 @@ export class HeaderComponent implements OnInit, AfterViewInit {
       this.modus = this.db.getMode();
     }
 
-  ngOnInit(): void {}
-
+  /**
+   * Nach dem der Content initialisiert wurde
+   * abbonieren wir die Events des Routings und prüfen diese.
+   *
+   * Das setInterval dient dazu den Header immer auf dem neusten Stand zu bringen und den Service
+   * ständig abzufragen.
+   */
   ngAfterViewInit(): void {
     this.router.events.subscribe((event: Event) => {
 
@@ -74,10 +85,18 @@ export class HeaderComponent implements OnInit, AfterViewInit {
     });
   }
 
+  /**
+   * Setzt die Variable pause auf True oder False und hält damit den Timer an
+   * @param pause true/false
+   */
   machePause(pause: Boolean) {
     pause ? this.pause = true : this.pause = false;
   }
 
+  /**
+   * Sets in unserem Service je nach angegebenen Grund, dass die Prüfung abgebrochen wurde.
+   * @param whoCancelled Nummer des Grundes (nummer wird umgewandelt)
+   */
   cancelExam(whoCancelled: Number) {
     let code: Number = 0;
     switch(whoCancelled) {
@@ -95,11 +114,19 @@ export class HeaderComponent implements OnInit, AfterViewInit {
     this.db.setExamValue(this.exam);
   }
 
+  /**
+   * Beendet die Prüfung über den Service
+   */
   exitExam() {
     this.db.exitExam();
   }
 
-startTimer(duration: any, display: any) {
+  /**
+   * Unsere Stoppuhr für die Prüfung.
+   * @param duration Zeit in Sekunden
+   * @param display Das HTML-Element wo die Ablaufenmde Zeit angezeigt werden soll.
+   */
+  startTimer(duration: any, display: any) {
     let timer = duration, minutes, seconds;
     let timereinheit = document.getElementById('timereinheit');
 
@@ -123,7 +150,7 @@ startTimer(duration: any, display: any) {
         if(timer < 6 &&  !timereinheit?.classList.contains('five-seconds-warning')) { timereinheit?.classList.remove('ten-seconds-warning'); timereinheit?.classList.add('five-seconds-warning'); }
 
 
-// Verhindert, dass der Nutzer "Weitermachen" kann...
+        // Verhindert, dass der Nutzer "Weitermachen" kann...
         // (Somit wird verhindert, wenn man trotzdem eine frage weitergeht,
         // dass der Timer umgangen wird. WASaBUG!!)
         if (timer <= -1)

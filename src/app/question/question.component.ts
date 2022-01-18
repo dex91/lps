@@ -12,6 +12,7 @@ import { Observable } from 'rxjs';
 export class QuestionComponent implements OnInit {
 
   // Für die API und den Modus "globale" variablen
+  questionIDForArray: any; // Indexvariable! Typ any MUSS!
   questionURIid: number = 0;
   poolURIName: String = "";
   modus?: Modus;
@@ -24,9 +25,9 @@ export class QuestionComponent implements OnInit {
   answerInput: String = "";
   resetButton: Boolean = false;
   answersByUser: Answer[] = [];
-  questionIDForArray: any;
 
   // Zahlreiche zählvariablen
+  // Manche dürfen NICHT zweimal verwendet werden!!!!
   counterofGivenAnswers = 0;
   counterofRightAnswersAavailable = 0;
   counterRightQuestions: number = 0;
