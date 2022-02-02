@@ -131,9 +131,6 @@ export class QuestionComponent implements OnInit {
   reloadQuestion() {
     // Eingabefeld VORHER zurücksetzen....
     let liste = document.getElementById('auswahlliste');
-    this.answerInput = "";
-    document.getElementById(`answerButton_${this.questionList[this.questionIDForArray].id}`)?.classList.remove('border-warning');
-    document.getElementById(`frageEinreichen_${this.questionList[this.questionIDForArray].id}`)?.setAttribute('disabled', '');
 
     if (liste) {
       for (let i = 0; i < liste.children.length; i++) {
@@ -144,6 +141,14 @@ export class QuestionComponent implements OnInit {
           liste.children[i].setAttribute('disabled', '');
         } else { liste.children[i].removeAttribute('disabled'); }
       }
+    }
+    else {
+      this.answerInput = "";
+      document.getElementById(`answerButton_${this.questionList[this.questionIDForArray].id}`)?.classList.remove('border-warning');
+      document.getElementById(`answerButton_${this.questionList[this.questionIDForArray].id}`)?.classList.remove('border-danger');
+      document.getElementById(`answerButton_${this.questionList[this.questionIDForArray].id}`)?.classList.remove('border-success');
+      document.getElementById(`answerButton_${this.questionList[this.questionIDForArray].id}`)?.removeAttribute('disabled');
+      document.getElementById(`frageEinreichen_${this.questionList[this.questionIDForArray].id}`)?.setAttribute('disabled', '');
     }
 
     // Modus prüfen
