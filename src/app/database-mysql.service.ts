@@ -11,7 +11,9 @@ import { Router } from '@angular/router';
 
 export class DatabaseMysqlService {
 
-  protected apiRoot: String = "https://api.visualnetworks.eu/lps";
+  //protected apiRoot: String = "https://api.visualnetworks.eu/lps";
+  //Changed the Server!
+  protected apiRoot: String = "https://api.visualdevelopers.de/lps";
   private modus?: Modus;
   private exam?: examValue;
   private timerTick?: examTimer;
