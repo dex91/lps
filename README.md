@@ -1,3 +1,9 @@
+
+
+# The API-Service will not work anymore! - It must be converted soon to my new backend (nodejs-Server)
+
+
+
 # Lps
 
 This project was generated with [Angular CLI](https://github.com/angular/angular-cli) version 13.0.4.
